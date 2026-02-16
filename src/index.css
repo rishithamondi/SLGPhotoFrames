@@ -1,0 +1,493 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Temple Morning Theme - Light Mode */
+    /* Main Background: Warm Ivory #F9F6F0 */
+    --background: 40 33% 96%;
+    /* Deep Wood Brown Headings: #3B2F2F */
+    --foreground: 15 18% 21%;
+
+    /* Card Background: Pure White #FFFFFF */
+    --card: 0 0% 100%;
+    --card-foreground: 15 18% 21%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 15 18% 21%;
+
+    /* Primary Gold: #C6A14A */
+    --primary: 42 52% 53%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Alternate Section Background: Soft Sand #F1E8DA */
+    --secondary: 38 33% 90%;
+    --secondary-foreground: 15 18% 21%;
+
+    /* Muted: Warm beige */
+    --muted: 38 25% 92%;
+    /* Warm Brown Gray Body Text: #5E5246 */
+    --muted-foreground: 30 14% 33%;
+
+    /* Accent Gold (same as primary for consistency) */
+    --accent: 42 52% 53%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Vermilion Red (sparingly): #9E2A2B */
+    --destructive: 0 56% 39%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Muted Border: rgba(198,161,74,0.2) */
+    --border: 42 52% 53% / 0.2;
+    --input: 42 52% 53% / 0.2;
+    --ring: 42 52% 53%;
+
+    --radius: 0.5rem;
+
+    /* Custom tokens */
+    --gold: 42 52% 53%;
+    --gold-hover: 42 52% 43%;
+    --cream: 40 33% 96%;
+    --sand: 38 33% 90%;
+    --wood-dark: 15 18% 21%;
+    --wood-medium: 30 14% 33%;
+    --vermilion: 0 56% 39%;
+
+    /* Warm shadows */
+    --shadow-soft: 0 2px 12px -2px hsl(30 20% 20% / 0.08);
+    --shadow-card: 0 4px 20px -4px hsl(30 20% 20% / 0.1);
+    --shadow-elevated: 0 12px 40px -8px hsl(30 20% 20% / 0.15);
+    --shadow-gold: 0 0 12px hsl(42 52% 53% / 0.15);
+
+    --sidebar-background: 40 33% 96%;
+    --sidebar-foreground: 15 18% 21%;
+    --sidebar-primary: 42 52% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 38 33% 90%;
+    --sidebar-accent-foreground: 15 18% 21%;
+    --sidebar-border: 42 52% 53% / 0.2;
+    --sidebar-ring: 42 52% 53%;
+  }
+
+  .dark {
+    /* Evening Aarti Theme - Dark Mode */
+    /* Main Background: Deep Charcoal Brown #1A1612 */
+    --background: 30 18% 9%;
+    /* Warm Ivory Headings: #F2E8D8 */
+    --foreground: 38 35% 90%;
+
+    /* Card Background: #2C241C */
+    --card: 28 20% 14%;
+    --card-foreground: 38 35% 90%;
+
+    --popover: 28 18% 12%;
+    --popover-foreground: 38 35% 90%;
+
+    /* Primary Gold: #D4AF37 */
+    --primary: 46 65% 52%;
+    --primary-foreground: 30 18% 9%;
+
+    /* Alternate Section: #221C16 */
+    --secondary: 28 18% 11%;
+    --secondary-foreground: 38 35% 90%;
+
+    /* Muted: Dark teak */
+    --muted: 28 15% 16%;
+    /* Soft Beige Body Text: #D8CBB8 */
+    --muted-foreground: 36 25% 78%;
+
+    /* Accent Gold (brighter for dark mode) */
+    --accent: 46 65% 52%;
+    --accent-foreground: 30 18% 9%;
+
+    --destructive: 0 50% 45%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Borders: rgba(212,175,55,0.2) */
+    --border: 46 65% 52% / 0.2;
+    --input: 46 65% 52% / 0.2;
+    --ring: 46 65% 52%;
+
+    /* Warm shadows for dark mode */
+    --shadow-soft: 0 2px 12px -2px hsl(0 0% 0% / 0.3);
+    --shadow-card: 0 4px 20px -4px hsl(0 0% 0% / 0.4);
+    --shadow-elevated: 0 12px 40px -8px hsl(0 0% 0% / 0.5);
+    --shadow-gold: 0 0 12px hsl(46 65% 52% / 0.2);
+
+    --sidebar-background: 30 18% 9%;
+    --sidebar-foreground: 38 35% 90%;
+    --sidebar-primary: 46 65% 52%;
+    --sidebar-primary-foreground: 30 18% 9%;
+    --sidebar-accent: 28 18% 11%;
+    --sidebar-accent-foreground: 38 35% 90%;
+    --sidebar-border: 46 65% 52% / 0.2;
+    --sidebar-ring: 46 65% 52%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif tracking-tight;
+    color: hsl(var(--foreground));
+  }
+
+  h1 { letter-spacing: -0.02em; }
+  h2 { letter-spacing: -0.01em; }
+
+  /* Selection highlight in gold tone */
+  ::selection {
+    background: hsl(var(--gold) / 0.3);
+    color: hsl(var(--foreground));
+  }
+
+  /* Focus ring in primary gold */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .section-padding {
+    @apply px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24;
+  }
+
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12;
+  }
+
+  .container-wide {
+    @apply max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12;
+  }
+
+  .glass-card {
+    @apply bg-card border border-border rounded-xl;
+    box-shadow: var(--shadow-card);
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, hsl(var(--accent)), hsl(var(--gold)));
+  }
+
+  .hover-lift {
+    @apply transition-all duration-300 ease-out;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-elevated);
+  }
+
+  /* Gold animated underline for links */
+  .link-underline {
+    @apply relative inline-block;
+  }
+
+  .link-underline::after {
+    content: '';
+    @apply absolute w-full h-0.5 bottom-0 left-0 origin-bottom-right transition-transform duration-300 scale-x-0;
+    background: hsl(var(--accent));
+  }
+
+  .link-underline:hover::after {
+    @apply origin-bottom-left scale-x-100;
+  }
+
+  /* Gold section divider */
+  .section-divider {
+    @apply w-16 h-0.5 mx-auto;
+    background: hsl(var(--accent));
+  }
+
+  /* Subtle gold divider line */
+  .gold-divider {
+    @apply w-full h-px;
+    background: linear-gradient(90deg, transparent, hsl(var(--accent) / 0.4), transparent);
+  }
+
+  /* Premium gold shadow for dark mode */
+  .shadow-gold {
+    box-shadow: var(--shadow-gold);
+  }
+
+  /* Warm card with gold border */
+  .temple-card {
+    @apply bg-card border border-border rounded-2xl;
+    box-shadow: var(--shadow-card);
+    transition: all 300ms ease-in-out;
+  }
+
+  .temple-card:hover {
+    box-shadow: var(--shadow-elevated);
+    border-color: hsl(var(--accent) / 0.3);
+  }
+
+  /* Sacred button styles */
+  .btn-gold {
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-xl font-medium transition-all duration-300;
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+
+  .btn-gold:hover {
+    background: hsl(var(--gold-hover));
+    box-shadow: 0 4px 20px -4px hsl(var(--gold) / 0.3);
+  }
+
+  .btn-gold-outline {
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-xl font-medium transition-all duration-300 border-2;
+    border-color: hsl(var(--primary));
+    color: hsl(var(--primary));
+    background: transparent;
+  }
+
+  .btn-gold-outline:hover {
+    background: hsl(var(--primary) / 0.1);
+    border-color: hsl(var(--gold-hover));
+  }
+}
+
+@layer utilities {
+  .animate-fade-up {
+    animation: fadeUp 0.6s ease-out forwards;
+    opacity: 0;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+    opacity: 0;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.4s ease-out forwards;
+    opacity: 0;
+  }
+
+  .animate-slide-in-right {
+    animation: slideInRight 0.5s ease-out forwards;
+    opacity: 0;
+  }
+
+  .animation-delay-100 { animation-delay: 100ms; }
+  .animation-delay-200 { animation-delay: 200ms; }
+  .animation-delay-300 { animation-delay: 300ms; }
+  .animation-delay-400 { animation-delay: 400ms; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Premium Devotional Micro-Animations */
+
+/* Gentle float animation - like temple bells */
+@keyframes gentleFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Soft glow pulse - like diyas */
+@keyframes softGlow {
+  0%, 100% { box-shadow: 0 0 20px hsl(var(--accent) / 0.15); }
+  50% { box-shadow: 0 0 30px hsl(var(--accent) / 0.25); }
+}
+
+/* Shimmer effect - like silk fabrics */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Subtle scale pulse - like breathing */
+@keyframes subtlePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+/* Sacred rotate - like prayer wheels */
+@keyframes sacredRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Border glow flow */
+@keyframes borderGlow {
+  0%, 100% { border-color: hsl(var(--accent) / 0.2); }
+  50% { border-color: hsl(var(--accent) / 0.5); }
+}
+
+/* Text shimmer for headings */
+@keyframes textShimmer {
+  0% { background-position: -100% center; }
+  100% { background-position: 100% center; }
+}
+
+/* Utility Classes for Micro-Animations */
+.animate-gentle-float {
+  animation: gentleFloat 4s ease-in-out infinite;
+}
+
+.animate-soft-glow {
+  animation: softGlow 3s ease-in-out infinite;
+}
+
+.animate-subtle-pulse {
+  animation: subtlePulse 3s ease-in-out infinite;
+}
+
+.animate-border-glow {
+  animation: borderGlow 2s ease-in-out infinite;
+}
+
+/* Hover Micro-Interactions */
+.hover-lift {
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px -12px hsl(var(--accent) / 0.25);
+}
+
+.hover-glow {
+  transition: box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 30px hsl(var(--accent) / 0.2);
+  border-color: hsl(var(--accent) / 0.4);
+}
+
+.hover-scale {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-scale:hover {
+  transform: scale(1.03);
+}
+
+/* Sacred button hover effect */
+.btn-sacred {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+
+.btn-sacred::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    hsl(var(--accent) / 0.2),
+    transparent
+  );
+  transition: left 0.6s ease;
+}
+
+.btn-sacred:hover::before {
+  left: 100%;
+}
+
+/* Card sacred hover */
+.card-sacred {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-sacred:hover {
+  transform: translateY(-8px);
+  box-shadow: 
+    0 20px 60px -15px hsl(var(--accent) / 0.15),
+    0 0 0 1px hsl(var(--accent) / 0.1);
+}
+
+/* Image zoom on hover - elegant */
+.img-zoom {
+  overflow: hidden;
+}
+
+.img-zoom img {
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.img-zoom:hover img {
+  transform: scale(1.08);
+}
+
+/* Link underline animation */
+.link-underline {
+  position: relative;
+}
+
+.link-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: hsl(var(--accent));
+  transition: width 0.4s ease;
+}
+
+.link-underline:hover::after {
+  width: 100%;
+}
+
+/* Stagger animation delays */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+
+/* Scrollbar - warm tones */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: hsl(var(--muted)); }
+::-webkit-scrollbar-thumb { 
+  background: hsl(var(--accent) / 0.3); 
+  border-radius: 4px; 
+}
+::-webkit-scrollbar-thumb:hover { 
+  background: hsl(var(--accent) / 0.5); 
+}
+
+/* Smooth scroll */
+html { scroll-behavior: smooth; }
+
+/* Dark mode scrollbar adjustments */
+.dark ::-webkit-scrollbar-track { background: hsl(var(--muted)); }
+.dark ::-webkit-scrollbar-thumb { background: hsl(var(--accent) / 0.4); }
+.dark ::-webkit-scrollbar-thumb:hover { background: hsl(var(--accent) / 0.6); }

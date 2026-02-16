@@ -1,0 +1,11 @@
+/* App-specific styles */
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Ensure full-width layout */
+.container-full {
+  width: 100%;
+  max-width: 100%;
+}
