@@ -26,20 +26,20 @@ const categoriesWithImages = categories.map((cat) => ({
 export default function CategoriesPage() {
   return (
     <div className="min-h-screen bg-background">
-      <section className="py-12 md:py-16 border-b border-border/50">
-        <div className="container-custom text-center">
-          <div className="section-divider mb-4" />
-          <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-3">
+      <section className="py-10 sm:py-12 md:py-16 border-b border-border/50">
+        <div className="container-custom px-4 sm:px-6 text-center">
+          <div className="section-divider mb-3 sm:mb-4" />
+          <h1 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-2 sm:mb-3">
             Shop by Category
           </h1>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-sm sm:text-base max-w-2xl mx-auto px-2">
             Explore our diverse collection of handcrafted frames and gift items
           </p>
         </div>
       </section>
 
-      <div className="container-custom py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div className="container-custom px-4 sm:px-6 py-8 sm:py-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {categoriesWithImages.map((category, index) => (
             <div key={category.id} className="animate-fade-up" style={{ animationDelay: `${index * 80}ms` }}>
               <CategoryCard category={category} className="h-full" />
@@ -47,13 +47,13 @@ export default function CategoriesPage() {
           ))}
         </div>
 
-        <div className="mt-12 bg-card border border-border/50 rounded-xl p-8 md:p-10 text-center">
-          <h2 className="font-serif text-2xl font-bold text-foreground mb-3">Looking for Something Special?</h2>
-          <p className="text-muted-foreground mb-6 max-w-xl mx-auto text-sm">
+        <div className="mt-8 sm:mt-12 bg-card border border-border/50 rounded-xl p-6 sm:p-8 md:p-10 text-center">
+          <h2 className="font-serif text-xl sm:text-2xl font-bold text-foreground mb-2 sm:mb-3">Looking for Something Special?</h2>
+          <p className="text-muted-foreground text-xs sm:text-sm mb-4 sm:mb-6 max-w-xl mx-auto px-2">
             We specialize in custom frames made to your exact specifications.
           </p>
-          <Link to="/contact">
-            <Button size="lg">Request Custom Order</Button>
+          <Link to="/contact" className="w-full sm:w-auto inline-block">
+            <Button size="lg" className="w-full sm:w-auto">Request Custom Order</Button>
           </Link>
         </div>
       </div>

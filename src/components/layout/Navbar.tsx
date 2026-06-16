@@ -42,10 +42,10 @@ export function Navbar() {
       <nav className="container-custom">
         <div className="flex items-center justify-between h-16 md:h-[72px]">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 shrink-0" aria-label="Home">
-            <img src={logo} alt="Sri Lakshmi Ganapathi" className="h-10 w-10 md:h-11 md:w-11 object-contain bg-transparent" />
-            <div className="hidden sm:block">
-              <h1 className="font-serif text-sm md:text-base font-semibold text-foreground leading-tight">
+          <Link to="/" className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0" aria-label="Home">
+            <img src={logo} alt="Sri Lakshmi Ganapathi" className="h-9 w-9 sm:h-10 sm:w-10 md:h-11 md:w-11 object-contain bg-transparent shrink-0" />
+            <div className="hidden sm:block min-w-0">
+              <h1 className="font-serif text-xs md:text-sm lg:text-base font-semibold text-foreground leading-tight truncate">
                 Sri Lakshmi Ganapathi Photo Frames
               </h1>
               <p className="text-[10px] text-muted-foreground tracking-wider uppercase">

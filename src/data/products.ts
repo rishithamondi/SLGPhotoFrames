@@ -73,7 +73,7 @@ export const categories: Category[] = [
     id: "glass-boxes",
     name: "Glass Boxes",
     description: "Premium glass display boxes and keepsake containers",
-    image: "/placeholder.svg",
+    image: "/categories/category-glass.jpg",
     productCount: 8,
   },
   {
@@ -161,7 +161,7 @@ export const products: Product[] = [
     id: "5",
     name: "Crystal Glass Box",
     category: "glass-boxes",
-    images: ["/placeholder.svg", "/placeholder.svg"],
+    images: ["/products/product-glass-boxes/glass-box-1.jpg", "/products/product-glass-boxes/glass-box-2.jpg", "/products/product-glass-boxes/glass-box-3.jpg", "/products/product-glass-boxes/glass-box-4.jpg", "/products/product-glass-boxes/glass-box-5.jpg", "/products/product-glass-boxes/glass-box-6.jpg"],
     description: "Exquisite crystal glass display box for jewelry, keepsakes, or small treasures. Hand-polished edges with brass hinges. A beautiful addition to any dresser or display shelf.",
     materials: ["Crystal Glass", "Brass Hinges"],
     sizes: [
@@ -243,7 +243,7 @@ export const products: Product[] = [
     id: "10",
     name: "Floating Glass Frame",
     category: "glass-boxes",
-    images: ["/placeholder.svg", "/placeholder.svg"],
+    images: ["/products/product-glass-boxes/glass-box-1.png", "/products/product-glass-boxes/glass-box-2.png", "/products/product-glass-boxes/glass-box-3.png"],
     description: "Modern floating glass frame that creates the illusion of your photo suspended in mid-air. Double-sided glass allows display from any angle.",
     materials: ["Tempered Glass", "Metal Stand"],
     sizes: [

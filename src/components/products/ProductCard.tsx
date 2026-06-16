@@ -20,8 +20,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
       )}
     >
       {/* Image */}
-      <div className="relative aspect-[4/5] overflow-hidden bg-muted">
-        {isPlaceholder ? (
+     <div className="relative aspect-square overflow-hidden bg-muted">        {isPlaceholder ? (
           // Placeholder for product image
           <div className="w-full h-full flex flex-col items-center justify-center gap-2">
             <ImageIcon className="h-10 w-10 text-muted-foreground/40" />
@@ -34,7 +33,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
           <img
             src={product.images[0]}
             alt={product.name}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain"
             loading="lazy"
           />
         )}
@@ -64,23 +63,23 @@ export function ProductCard({ product, className }: ProductCardProps) {
       </div>
 
       {/* Content */}
-      <div className="p-4">
-        <h3 className="font-serif text-base font-semibold text-foreground mb-1 line-clamp-1 group-hover:text-accent transition-colors duration-300">
+      <div className="p-3 sm:p-4">
+        <h3 className="font-serif text-sm sm:text-base font-semibold text-foreground mb-1 line-clamp-1 group-hover:text-accent transition-colors duration-300">
           {product.name}
         </h3>
 
-        <p className="text-xs text-muted-foreground mb-3">
+        <p className="text-[10px] sm:text-xs text-muted-foreground mb-2 sm:mb-3 line-clamp-1">
           {product.materials.slice(0, 2).join(" · ")}
         </p>
 
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs text-muted-foreground">Starting from</p>
-            <p className="font-semibold text-foreground group-hover:text-accent transition-colors duration-300">
+            <p className="text-[10px] sm:text-xs text-muted-foreground">Starting from</p>
+            <p className="font-semibold text-foreground text-sm sm:text-base group-hover:text-accent transition-colors duration-300">
               ₹{product.basePrice.toLocaleString()}
             </p>
           </div>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-[10px] sm:text-xs text-muted-foreground">
             {product.sizes.length} sizes
           </p>
         </div>

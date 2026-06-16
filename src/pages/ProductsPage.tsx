@@ -59,21 +59,21 @@ export default function ProductsPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <section className="py-12 md:py-16 border-b border-border/50">
-        <div className="container-custom text-center">
-          <div className="section-divider mb-4" />
-          <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-3">
+      <section className="py-10 sm:py-12 md:py-16 border-b border-border/50">
+        <div className="container-custom px-4 sm:px-6 text-center">
+          <div className="section-divider mb-3 sm:mb-4" />
+          <h1 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-2 sm:mb-3">
             Our Products
           </h1>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-sm sm:text-base max-w-2xl mx-auto px-2">
             Browse our collection of handcrafted photo frames, lighting displays, and gift articles
           </p>
         </div>
       </section>
 
-      <div className="container-custom py-8">
+      <div className="container-custom px-4 sm:px-6 py-6 sm:py-8">
         {/* Search and Sort */}
-        <div className="flex flex-col md:flex-row gap-3 mb-6">
+        <div className="flex flex-col sm:flex-row gap-3 mb-4 sm:mb-6">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
@@ -213,17 +213,17 @@ export default function ProductsPage() {
           </aside>
 
           {/* Products Grid */}
-          <div className="flex-1">
-            <p className="text-xs text-muted-foreground mb-5">
+          <div className="flex-1 min-w-0">
+            <p className="text-xs text-muted-foreground mb-4 sm:mb-5">
               {filteredProducts.length} of {products.length} products
             </p>
 
             {isLoading ? (
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-5">
                 {Array.from({ length: 6 }).map((_, i) => <ProductSkeleton key={i} />)}
               </div>
             ) : filteredProducts.length > 0 ? (
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-5">
                 {filteredProducts.map((product, index) => (
                   <div key={product.id} className="animate-fade-up" style={{ animationDelay: `${index * 40}ms` }}>
                     <ProductCard product={product} />
@@ -231,8 +231,8 @@ export default function ProductsPage() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-20">
-                <p className="text-muted-foreground mb-4">No products found matching your criteria</p>
+              <div className="text-center py-12 sm:py-20">
+                <p className="text-muted-foreground text-sm mb-4">No products found matching your criteria</p>
                 <Button variant="outline" onClick={clearFilters} size="sm">Clear Filters</Button>
               </div>
             )}

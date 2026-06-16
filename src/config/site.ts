@@ -1,7 +1,7 @@
 export const siteConfig = {
   name: "Sri Lakshmi Ganapathi Photo Frame Works",
-  shortName: "SLG Frames",
-  tagline: "Handcrafted with Love",
+  shortName: "Sri Lakshmi Ganapathi Photo Frames",
+  tagline: "Since 1985",
   description: "Discover handcrafted photo frames, lighting displays, and silver gift articles. Each piece tells a story of dedication and artistry.",
   phone: "917989178868",
   phoneDisplay: "+91 79891 78868",

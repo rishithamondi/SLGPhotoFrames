@@ -99,14 +99,14 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
-      <section className="py-16 md:py-24 border-b border-border/50">
-        <div className="container-custom">
+      <section className="py-12 sm:py-16 md:py-24 border-b border-border/50">
+        <div className="container-custom px-4 sm:px-6">
           <div className="max-w-3xl mx-auto text-center">
-            <div className="section-divider mb-6" />
-            <h1 className="font-serif text-4xl sm:text-5xl font-bold text-foreground mb-5 animate-fade-up">
+            <div className="section-divider mb-4 sm:mb-6" />
+            <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4 sm:mb-5 animate-fade-up px-2">
               Our Story
             </h1>
-            <p className="text-lg text-muted-foreground leading-relaxed animate-fade-up animation-delay-100">
+            <p className="text-sm sm:text-base lg:text-lg text-muted-foreground leading-relaxed animate-fade-up animation-delay-100 px-4">
               For over three decades, we have been crafting beautiful photo frames
               and gift articles that help preserve your most precious memories.
             </p>
@@ -115,9 +115,9 @@ export default function AboutPage() {
       </section>
 
       {/* Artisan Story */}
-      <section className="section-padding">
-        <div className="container-custom">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+      <section className="py-12 sm:py-16 lg:py-20">
+        <div className="container-custom px-4 sm:px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
             <div className="relative animate-fade-up">
               {/* Artisan Portrait */}
               <div className="relative w-full aspect-[4/5] rounded-xl overflow-hidden">
@@ -135,9 +135,9 @@ export default function AboutPage() {
             </div>
 
             <div className="animate-fade-up animation-delay-100">
-              <div className="section-divider mb-6 !mx-0" />
-              <h2 className="font-serif text-3xl font-bold text-foreground mb-5">Meet the Master Craftsman</h2>
-              <div className="space-y-4 text-muted-foreground leading-relaxed">
+              <div className="section-divider mb-4 sm:mb-6 !mx-0" />
+              <h2 className="font-serif text-2xl sm:text-3xl font-bold text-foreground mb-4 sm:mb-5">Meet the Master Craftsman</h2>
+              <div className="space-y-3 sm:space-y-4 text-muted-foreground leading-relaxed text-sm sm:text-base">
                 <p>Our journey began in 1985 when Sivanandh Rao's father established a small workshop with a passion for craftsmanship and quality work.</p>
                 <p>Today, Sivanandh Rao proudly continues that legacy, bringing expertise in creating elegant glass boxes and beautifully lighting devotional photos to enhance their presence. He blends traditional techniques with modern precision to craft frames that are both timeless and refined.</p>
                 <p>Every piece tells a story — not just yours, but ours too.</p>
@@ -148,9 +148,9 @@ export default function AboutPage() {
       </section>
 
       {/* Stats */}
-      <section className="py-14 bg-muted/30 border-y border-border/50">
-        <div className="container-custom">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+      <section className="py-10 sm:py-14 bg-muted/30 border-y border-border/50">
+        <div className="container-custom px-4 sm:px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8">
             {stats.map((stat, i) => (
               <AnimatedStat
                 key={stat.label}
@@ -165,21 +165,21 @@ export default function AboutPage() {
       </section>
 
       {/* Values */}
-      <section className="section-padding">
-        <div className="container-custom">
-          <div className="text-center mb-12">
-            <div className="section-divider mb-4" />
-            <h2 className="font-serif text-3xl font-bold text-foreground mb-3">Why Choose Us?</h2>
-            <p className="text-muted-foreground">Our commitment to quality sets us apart</p>
+      <section className="py-12 sm:py-16 lg:py-20">
+        <div className="container-custom px-4 sm:px-6">
+          <div className="text-center mb-8 sm:mb-12">
+            <div className="section-divider mb-3 sm:mb-4" />
+            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-3">Why Choose Us?</h2>
+            <p className="text-muted-foreground text-sm sm:text-base">Our commitment to quality sets us apart</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {values.map((v, i) => (
-              <div key={v.title} className="bg-card border border-border/50 p-6 rounded-xl text-center animate-fade-up" style={{ animationDelay: `${i * 80}ms` }}>
-                <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-4">
-                  <v.icon className="h-5 w-5 text-accent" />
+              <div key={v.title} className="bg-card border border-border/50 p-4 sm:p-6 rounded-xl text-center animate-fade-up" style={{ animationDelay: `${i * 80}ms` }}>
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                  <v.icon className="h-4 w-4 sm:h-5 sm:w-5 text-accent" />
                 </div>
-                <h3 className="font-serif text-base font-semibold text-foreground mb-2">{v.title}</h3>
-                <p className="text-sm text-muted-foreground">{v.description}</p>
+                <h3 className="font-serif text-sm sm:text-base font-semibold text-foreground mb-1 sm:mb-2">{v.title}</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground">{v.description}</p>
               </div>
             ))}
           </div>
@@ -187,15 +187,19 @@ export default function AboutPage() {
       </section>
 
       {/* CTA */}
-      <section className="section-padding bg-foreground">
-        <div className="container-custom text-center">
-          <h2 className="font-serif text-3xl font-bold text-background mb-4">Ready to Start Your Project?</h2>
-          <p className="text-background/60 mb-8 max-w-2xl mx-auto">
+      <section className="py-12 sm:py-16 lg:py-20 bg-foreground">
+        <div className="container-custom px-4 sm:px-6 text-center">
+          <h2 className="font-serif text-2xl sm:text-3xl font-bold text-background mb-3 sm:mb-4 px-2">Ready to Start Your Project?</h2>
+          <p className="text-background/60 text-sm sm:text-base mb-6 sm:mb-8 max-w-2xl mx-auto px-4">
             Let us help you preserve your precious memories with a handcrafted frame made just for you.
           </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link to="/products"><Button variant="gold" size="xl">Browse Products</Button></Link>
-            <Link to="/contact"><Button variant="outline" size="xl" className="border-background/20 text-background hover:bg-background/10">Contact Us</Button></Link>
+          <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
+            <Link to="/products" className="w-full sm:w-auto">
+              <Button variant="gold" size="lg" className="w-full sm:w-auto sm:px-8">Browse Products</Button>
+            </Link>
+            <Link to="/contact" className="w-full sm:w-auto">
+              <Button variant="outline" size="lg" className="w-full sm:w-auto sm:px-8 border-background/20 text-background hover:bg-background/10">Contact Us</Button>
+            </Link>
           </div>
         </div>
       </section>
