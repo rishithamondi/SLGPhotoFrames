@@ -141,7 +141,7 @@ export default function ProductsPage() {
           {/* Filters Sidebar */}
           <aside
             className={cn(
-              "fixed md:relative inset-0 z-40 md:z-auto bg-background md:bg-transparent w-full md:w-56 shrink-0 p-6 md:p-0 overflow-auto transition-transform duration-300 md:translate-x-0",
+              "fixed md:relative inset-y-0 left-0 z-40 md:z-auto bg-background md:bg-transparent w-[85vw] max-w-[320px] md:w-56 md:max-w-none shrink-0 p-6 pb-20 md:p-0 md:pb-0 overflow-y-auto transition-transform duration-300 md:translate-x-0 shadow-2xl md:shadow-none border-r border-border md:border-none",
               showFilters ? "translate-x-0" : "-translate-x-full md:translate-x-0"
             )}
           >
@@ -238,11 +238,11 @@ export default function ProductsPage() {
             </p>
 
             {isLoading ? (
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-5">
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
                 {Array.from({ length: 6 }).map((_, i) => <ProductSkeleton key={i} />)}
               </div>
             ) : filteredProducts.length > 0 ? (
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-5">
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
                 {filteredProducts.map((product, index) => (
                   <div key={product.id} className="animate-fade-up" style={{ animationDelay: `${index * 40}ms` }}>
                     <ProductCard product={product} />

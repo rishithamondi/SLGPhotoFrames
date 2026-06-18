@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useDocumentTitle } from "@/hooks/use-document-title";
 import { ArrowLeft, Heart, Phone, MessageCircle, Truck, Shield, RotateCcw, ChevronLeft, ChevronRight, Gift, Package, Clock, Palette, Users, Zap, MapPin, Calendar, X, LucideIcon } from "lucide-react";
@@ -39,8 +39,30 @@ export default function ProductDetailPage() {
   const relatedProducts = products.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4);
 
   const toggleWishlist = () => inWishlist ? removeFromWishlist(product.id) : addToWishlist(product.id);
-  const nextImage = () => setCurrentImageIndex((i) => (i === productImages.length - 1 ? 0 : i + 1));
-  const prevImage = () => setCurrentImageIndex((i) => (i === 0 ? productImages.length - 1 : i - 1));
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  
+  const scrollToImage = (index: number) => {
+    setCurrentImageIndex(index);
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({
+        left: scrollRef.current.offsetWidth * index,
+        behavior: "smooth"
+      });
+    }
+  };
+
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      const index = Math.round(scrollRef.current.scrollLeft / scrollRef.current.offsetWidth);
+      if (index !== currentImageIndex) {
+        setCurrentImageIndex(index);
+      }
+    }
+  };
+
+  const nextImage = () => scrollToImage(currentImageIndex === productImages.length - 1 ? 0 : currentImageIndex + 1);
+  const prevImage = () => scrollToImage(currentImageIndex === 0 ? productImages.length - 1 : currentImageIndex - 1);
 
   const whatsappMsg = `Hi! I'm interested in "${product.name}"${selectedSize ? ` (Size: ${selectedSize}, ₹${currentPrice.toLocaleString()})` : ""}. Can you provide more details?`;
 
@@ -63,18 +85,28 @@ export default function ProductDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-14">
           {/* Image Gallery */}
           <div className="space-y-3 sm:space-y-4">
-            <div className="relative aspect-square rounded-lg overflow-hidden bg-white border border-border/50 flex items-center justify-center p-6 group">
-              <img
-                src={productImages[currentImageIndex]}
-                alt={`${product.name} - Image ${currentImageIndex + 1}`}
-                className="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105"
-              />
+            <div className="relative aspect-square rounded-lg overflow-hidden bg-white border border-border/50 group">
+              <div 
+                ref={scrollRef}
+                onScroll={handleScroll}
+                className="w-full h-full flex overflow-x-auto snap-x snap-mandatory scrollbar-hide"
+              >
+                {productImages.map((img, i) => (
+                  <div key={i} className="min-w-full h-full flex items-center justify-center p-6 snap-center shrink-0">
+                    <img
+                      src={img}
+                      alt={`${product.name} - Image ${i + 1}`}
+                      className="max-w-full max-h-full object-contain transition-transform duration-500 lg:group-hover:scale-105"
+                    />
+                  </div>
+                ))}
+              </div>
               {productImages.length > 1 && (
                 <>
-                  <button onClick={prevImage} className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center hover:bg-background transition-colors" aria-label="Previous image">
+                  <button onClick={prevImage} className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center hover:bg-background transition-colors opacity-0 lg:group-hover:opacity-100" aria-label="Previous image">
                     <ChevronLeft className="h-4 w-4" />
                   </button>
-                  <button onClick={nextImage} className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center hover:bg-background transition-colors" aria-label="Next image">
+                  <button onClick={nextImage} className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center hover:bg-background transition-colors opacity-0 lg:group-hover:opacity-100" aria-label="Next image">
                     <ChevronRight className="h-4 w-4" />
                   </button>
                 </>
@@ -89,7 +121,7 @@ export default function ProductDetailPage() {
                 {productImages.map((img, i) => (
                   <button
                     key={i}
-                    onClick={() => setCurrentImageIndex(i)}
+                    onClick={() => scrollToImage(i)}
                     className={cn(
                       "shrink-0 w-14 h-14 sm:w-16 sm:h-16 rounded-md overflow-hidden border-2 transition-colors bg-white flex items-center justify-center p-1.5",
                       i === currentImageIndex ? "border-primary" : "border-transparent hover:border-border"

@@ -69,7 +69,7 @@ export function UrgentOrderSection({ productName, selectedSize }: { productName:
             value={deliveryLocation}
             onChange={(e) => setDeliveryLocation(e.target.value)}
             placeholder="Enter your delivery address..."
-            className="w-full px-4 py-3 rounded-lg border border-amber-200 dark:border-amber-800/30 bg-background text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20"
+            className="w-full px-4 py-3 rounded-lg border border-amber-200 dark:border-amber-800/30 bg-background text-base focus:outline-none focus:ring-2 focus:ring-amber-500/20"
           />
         </div>
 
@@ -83,7 +83,7 @@ export function UrgentOrderSection({ productName, selectedSize }: { productName:
             value={requiredBefore}
             onChange={(e) => setRequiredBefore(e.target.value)}
             placeholder="e.g., Today 6 PM, Tomorrow morning..."
-            className="w-full px-4 py-3 rounded-lg border border-amber-200 dark:border-amber-800/30 bg-background text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20"
+            className="w-full px-4 py-3 rounded-lg border border-amber-200 dark:border-amber-800/30 bg-background text-base focus:outline-none focus:ring-2 focus:ring-amber-500/20"
           />
         </div>
 
@@ -128,7 +128,7 @@ export function MobileUrgentBar({ productName, selectedSize }: { productName: st
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
-      <div className="bg-gradient-to-r from-amber-500 to-orange-500 p-3 shadow-2xl">
+      <div className="bg-gradient-to-r from-amber-500 to-orange-500 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-2xl">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-white">
             <Zap className="h-5 w-5 animate-pulse" />

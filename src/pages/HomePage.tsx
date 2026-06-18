@@ -44,7 +44,7 @@ export default function HomePage() {
   return (
     <div>
       {/* Hero Section - Full Width Layout */}
-      <section className="relative min-h-[90vh] sm:min-h-screen flex items-center pt-16 sm:pt-20">
+      <section className="relative min-h-[80vh] md:min-h-screen flex items-center pt-20 pb-12 lg:pb-0">
         {/* Background */}
         <div className="absolute inset-0 z-0">
           <img
@@ -63,24 +63,27 @@ export default function HomePage() {
               <p className="text-accent text-xs sm:text-sm font-medium uppercase tracking-[0.2em] sm:tracking-[0.25em] mb-4 sm:mb-6 animate-fade-up">
                 Since 1985
               </p>
-              <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-foreground mb-4 sm:mb-6 animate-fade-up animation-delay-100 leading-[1.1] sm:leading-[1.05]">
+              <h1 className="font-serif text-[clamp(2rem,8vw,3rem)] sm:text-5xl md:text-6xl lg:text-7xl font-bold text-foreground mb-4 sm:mb-6 animate-fade-up animation-delay-100 leading-[1.1] sm:leading-[1.05]">
                 Timeless Frames for{" "}
                 <span className="text-gradient">Precious Memories</span>
               </h1>
               <p className="text-sm sm:text-lg text-muted-foreground mb-6 sm:mb-8 leading-relaxed animate-fade-up animation-delay-200 max-w-lg mx-auto sm:mx-0">
                 Discover our collection of photo frames, lighting displays, and silver gift articles. Each piece tells a story.
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 animate-fade-up animation-delay-300 justify-center sm:justify-start">
+              <div className="flex flex-col sm:flex-row gap-4 sm:gap-4 animate-fade-up animation-delay-300 justify-center sm:justify-start items-center">
                 <Link to="/products" className="w-full sm:w-auto">
-                  <Button size="lg" className="w-full sm:w-auto sm:px-8">
+                  <Button size="lg" className="w-full sm:w-auto sm:px-8 shadow-gold">
                     View Products
                     <ArrowRight className="h-4 w-4 ml-2" />
                   </Button>
                 </Link>
-                <Link to="/contact" className="w-full sm:w-auto">
-                  <Button variant="outline" size="lg" className="w-full sm:w-auto sm:px-8">
+                <Link to="/contact" className="w-full sm:w-auto flex justify-center">
+                  <Button variant="outline" size="lg" className="hidden sm:inline-flex sm:px-8">
                     Custom Order
                   </Button>
+                  <span className="sm:hidden text-sm font-medium text-muted-foreground hover:text-foreground underline underline-offset-4">
+                    Or request a custom order
+                  </span>
                 </Link>
               </div>
             </div>
@@ -154,7 +157,7 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
             {featuredProducts.map((product, index) => (
               <div key={product.id} className="animate-fade-up" style={{ animationDelay: `${index * 80}ms` }}>
                 <ProductCard product={product} />

@@ -75,7 +75,7 @@ export function Footer() {
                 <li key={link.path}>
                   <Link 
                     to={link.path} 
-                    className="text-muted-foreground hover:text-foreground text-xs sm:text-sm transition-colors duration-200 inline-flex items-center gap-1 group"
+                    className="text-muted-foreground hover:text-foreground text-xs sm:text-sm transition-colors duration-200 inline-flex items-center gap-1 group py-1.5"
                   >
                     <span className="w-0 h-px bg-primary group-hover:w-3 transition-all duration-300" />
                     {link.name}
@@ -93,7 +93,7 @@ export function Footer() {
                 <li key={cat.name}>
                   <Link 
                     to={cat.path} 
-                    className="text-muted-foreground hover:text-foreground text-xs sm:text-sm transition-colors duration-200 inline-flex items-center gap-1 group"
+                    className="text-muted-foreground hover:text-foreground text-xs sm:text-sm transition-colors duration-200 inline-flex items-center gap-1 group py-1.5"
                   >
                     <span className="w-0 h-px bg-primary group-hover:w-3 transition-all duration-300" />
                     {cat.name}
@@ -106,7 +106,7 @@ export function Footer() {
           {/* Contact - Takes full width on sm, 3 columns on lg */}
           <div className="sm:col-span-2 lg:col-span-3">
             <h4 className="text-foreground font-medium text-sm mb-3 sm:mb-5 tracking-wide">Get in Touch</h4>
-            <ul className="space-y-3 sm:space-y-4">
+            <ul className="space-y-4 sm:space-y-5">
               <li>
                 <a 
                   href={siteConfig.address.mapsUrl} 

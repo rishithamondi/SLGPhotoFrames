@@ -32,9 +32,18 @@ export function Navbar() {
   }, [location]);
 
   return (
-    <header
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+    <>
+      {/* Mobile Menu Backdrop */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 z-40 bg-background/60 backdrop-blur-sm md:hidden" 
+          onClick={() => setIsOpen(false)} 
+          aria-hidden="true"
+        />
+      )}
+      <header
+        className={cn(
+          "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         "bg-background/95 backdrop-blur-sm",
         isScrolled ? "shadow-soft border-b border-border" : "border-b border-transparent"
       )}
@@ -44,8 +53,8 @@ export function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0" aria-label="Home">
             <img src={logo} alt="Sri Lakshmi Ganapathi" className="h-9 w-9 sm:h-10 sm:w-10 md:h-11 md:w-11 object-contain bg-transparent shrink-0" />
-            <div className="hidden sm:block min-w-0">
-              <h1 className="font-serif text-xs md:text-sm lg:text-base font-semibold text-foreground leading-tight truncate">
+            <div className="hidden md:block min-w-0">
+              <h1 className="font-serif text-sm lg:text-base font-semibold text-foreground leading-tight truncate">
                 Sri Lakshmi Ganapathi Photo Frames
               </h1>
               <p className="text-[10px] text-muted-foreground tracking-wider uppercase">
@@ -106,11 +115,12 @@ export function Navbar() {
         {/* Mobile Navigation */}
         <div
           className={cn(
-            "md:hidden overflow-hidden transition-all duration-300 ease-in-out",
-            isOpen ? "max-h-[400px] pb-4" : "max-h-0"
+            "md:hidden grid transition-all duration-300 ease-in-out",
+            isOpen ? "grid-rows-[1fr] opacity-100 pb-4" : "grid-rows-[0fr] opacity-0"
           )}
         >
-          <div className="flex flex-col gap-1 pt-3 border-t border-border">
+          <div className="overflow-hidden">
+            <div className="flex flex-col gap-1 pt-3 border-t border-border">
             {navLinks.map((link) => (
               <Link
                 key={link.path}
@@ -141,8 +151,10 @@ export function Navbar() {
               </Button>
             </div>
           </div>
+          </div>
         </div>
       </nav>
     </header>
+    </>
   );
 }

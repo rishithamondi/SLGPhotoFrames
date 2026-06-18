@@ -20,7 +20,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
       )}
     >
       {/* Image */}
-      <div className="relative aspect-square overflow-hidden bg-white flex items-center justify-center p-3.5 border-b border-border/40">
+      <div className="relative aspect-square overflow-hidden bg-white flex items-center justify-center p-2 sm:p-3.5 border-b border-border/40">
         {isPlaceholder ? (
           // Placeholder for product image
           <div className="w-full h-full flex flex-col items-center justify-center gap-2 bg-muted">
@@ -55,7 +55,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
 
         {/* Hover overlay with View Details */}
         {!isPlaceholder && (
-          <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-foreground/0 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end justify-center pb-6">
+          <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-foreground/0 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 hidden lg:flex items-end justify-center pb-6">
             <span className="bg-background/95 backdrop-blur-sm text-foreground text-xs font-medium px-6 py-2.5 rounded-full translate-y-4 group-hover:translate-y-0 transition-all duration-500 shadow-elevated border border-border/50">
               View Details
             </span>
@@ -65,7 +65,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
 
       {/* Content */}
       <div className="p-3 sm:p-4">
-        <h3 className="font-serif text-sm sm:text-base font-semibold text-foreground mb-1 line-clamp-1 group-hover:text-accent transition-colors duration-300">
+        <h3 className="font-serif text-sm sm:text-base font-semibold text-foreground mb-1 line-clamp-2 group-hover:text-accent transition-colors duration-300">
           {product.name}
         </h3>
 
@@ -76,7 +76,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-[10px] sm:text-xs text-muted-foreground">Starting from</p>
-            <p className="font-semibold text-foreground text-sm sm:text-base group-hover:text-accent transition-colors duration-300">
+            <p className="font-bold text-primary text-lg sm:text-xl group-hover:text-accent transition-colors duration-300">
               ₹{product.basePrice.toLocaleString()}
             </p>
           </div>
