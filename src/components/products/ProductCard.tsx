@@ -20,9 +20,10 @@ export function ProductCard({ product, className }: ProductCardProps) {
       )}
     >
       {/* Image */}
-     <div className="relative aspect-square overflow-hidden bg-muted">        {isPlaceholder ? (
+      <div className="relative aspect-square overflow-hidden bg-white flex items-center justify-center p-3.5 border-b border-border/40">
+        {isPlaceholder ? (
           // Placeholder for product image
-          <div className="w-full h-full flex flex-col items-center justify-center gap-2">
+          <div className="w-full h-full flex flex-col items-center justify-center gap-2 bg-muted">
             <ImageIcon className="h-10 w-10 text-muted-foreground/40" />
             <div className="text-center px-2">
               <p className="text-xs text-muted-foreground">Add Product Photo</p>
@@ -33,7 +34,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
           <img
             src={product.images[0]}
             alt={product.name}
-            className="w-full h-full object-contain"
+            className="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
           />
         )}

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Sparkles, Shield, Heart, Truck, MessageCircle, Users } from "lucide-react";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/products/ProductCard";
 import { CategoryCard } from "@/components/categories/CategoryCard";
@@ -39,6 +40,7 @@ const features = [
 ];
 
 export default function HomePage() {
+  useDocumentTitle();
   return (
     <div>
       {/* Hero Section - Full Width Layout */}

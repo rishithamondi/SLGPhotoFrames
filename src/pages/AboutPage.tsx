@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { Award, Heart, Sparkles, Users } from "lucide-react";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 // About Page Assets
@@ -96,6 +97,7 @@ const values = [
 ];
 
 export default function AboutPage() {
+  useDocumentTitle("Our Story");
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}

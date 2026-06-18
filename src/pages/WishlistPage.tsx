@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
 import { Trash2, ArrowRight, Heart } from "lucide-react";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 import { Button } from "@/components/ui/button";
 import { useWishlist } from "@/contexts/WishlistContext";
 import { products } from "@/data/products";
 import { getWhatsAppUrl } from "@/config/site";
 
 export default function WishlistPage() {
+  useDocumentTitle("Your Wishlist");
   const { wishlist, removeFromWishlist, clearWishlist } = useWishlist();
   const wishlistProducts = products.filter((p) => wishlist.includes(p.id));
   const totalEstimate = wishlistProducts.reduce((sum, p) => sum + p.basePrice, 0);
@@ -50,8 +52,8 @@ export default function WishlistPage() {
         <div className="space-y-3">
           {wishlistProducts.map((product) => (
             <div key={product.id} className="flex gap-4 p-4 bg-card rounded-xl border border-border/50 transition-all duration-200 hover:shadow-card">
-              <Link to={`/products/${product.id}`} className="shrink-0">
-                <img src={product.images[0]} alt={product.name} className="w-20 h-20 md:w-24 md:h-24 rounded-lg object-cover bg-muted" loading="lazy" />
+              <Link to={`/products/${product.id}`} className="shrink-0 w-20 h-20 md:w-24 md:h-24 rounded-lg overflow-hidden bg-white border border-border/50 flex items-center justify-center p-1.5">
+                <img src={product.images[0]} alt={product.name} className="max-w-full max-h-full object-contain" loading="lazy" />
               </Link>
               <div className="flex-1 min-w-0">
                 <Link to={`/products/${product.id}`}>
@@ -83,7 +85,7 @@ export default function WishlistPage() {
           <h2 className="font-serif text-xl font-bold text-foreground mb-3">Ready to Order?</h2>
           <p className="text-sm text-muted-foreground mb-5">Contact us to discuss your wishlist items.</p>
           <div className="flex flex-wrap justify-center gap-3">
-            <a href={getWhatsAppUrl("Hi! I'd like to order items from my wishlist.")} target="_blank" rel="noopener noreferrer">
+            <a href={getWhatsAppUrl(`Hi! I'd like to order these items from my wishlist: ${wishlistProducts.map((p) => p.name).join(", ")}`)} target="_blank" rel="noopener noreferrer">
               <Button variant="gold" size="lg">Order on WhatsApp</Button>
             </a>
             <Link to="/contact"><Button variant="outline" size="lg">Contact Us</Button></Link>

@@ -1,7 +1,9 @@
 import { Phone, Mail, MapPin, MessageCircle, Clock, ArrowUpRight, ExternalLink, Users } from "lucide-react";
 import { siteConfig, getWhatsAppUrl, getCallUrl } from "@/config/site";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 
 export default function ContactPage() {
+  useDocumentTitle("Get in Touch");
   const contactMethods = [
     {
       icon: MessageCircle,

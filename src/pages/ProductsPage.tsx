@@ -1,5 +1,7 @@
 import { useState, useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
+import { getWhatsAppUrl } from "@/config/site";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,11 +18,12 @@ import {
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 
-const materials = ["Teak Wood", "Glass", "Resin", "Gold Leaf", "Acrylic", "Silver Plated Metal", "Crystal Glass", "Rosewood"];
+const materials = Array.from(new Set(products.flatMap((p) => p.materials))).sort();
 
 type SortOption = "latest" | "price-low" | "price-high" | "popular";
 
 export default function ProductsPage() {
+  useDocumentTitle("Our Products");
   const [searchParams, setSearchParams] = useSearchParams();
   const [isLoading] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
@@ -215,7 +218,23 @@ export default function ProductsPage() {
           {/* Products Grid */}
           <div className="flex-1 min-w-0">
             <p className="text-xs text-muted-foreground mb-4 sm:mb-5">
-              {filteredProducts.length} of {products.length} products
+              {(() => {
+                if (!hasActiveFilters) return `Showing all ${products.length} products`;
+                
+                let text = `Showing ${filteredProducts.length}`;
+                
+                if (selectedCategory !== "all") {
+                  const catName = categories.find(c => c.id === selectedCategory)?.name || "Products";
+                  text += ` ${catName}`;
+                } else {
+                  text += ` Products`;
+                }
+                
+                if (search) text += ` matching "${search}"`;
+                if (selectedMaterial !== "all") text += ` in ${selectedMaterial}`;
+                
+                return text;
+              })()}
             </p>
 
             {isLoading ? (
@@ -229,6 +248,21 @@ export default function ProductsPage() {
                     <ProductCard product={product} />
                   </div>
                 ))}
+              </div>
+            ) : selectedCategory === "custom-orders" ? (
+              <div className="text-center py-12 sm:py-20 bg-card border border-border/50 rounded-xl px-4">
+                <h2 className="font-serif text-2xl sm:text-3xl font-bold text-foreground mb-3">Custom Orders Coming Soon</h2>
+                <p className="text-muted-foreground text-sm sm:text-base mb-6 max-w-xl mx-auto">
+                  Personalized devotional frames, custom gift articles, wedding gifts, and special orders can be requested directly through WhatsApp.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <a href={getWhatsAppUrl("Hi, I'm interested in a custom order. Can you share details?")} target="_blank" rel="noopener noreferrer">
+                    <Button variant="gold" size="lg" className="w-full sm:w-auto">WhatsApp Enquiry</Button>
+                  </a>
+                  <Link to="/contact">
+                    <Button variant="outline" size="lg" className="w-full sm:w-auto">Contact Us</Button>
+                  </Link>
+                </div>
               </div>
             ) : (
               <div className="text-center py-12 sm:py-20">

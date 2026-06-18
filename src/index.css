@@ -182,12 +182,12 @@
   }
 
   .hover-lift {
-    @apply transition-all duration-300 ease-out;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s ease;
   }
 
   .hover-lift:hover {
     transform: translateY(-4px);
-    box-shadow: var(--shadow-elevated);
+    box-shadow: 0 12px 40px -12px hsl(var(--accent) / 0.25);
   }
 
   /* Gold animated underline for links */
@@ -368,14 +368,6 @@
 }
 
 /* Hover Micro-Interactions */
-.hover-lift {
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s ease;
-}
-
-.hover-lift:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px -12px hsl(var(--accent) / 0.25);
-}
 
 .hover-glow {
   transition: box-shadow 0.4s ease, border-color 0.4s ease;
@@ -446,25 +438,7 @@
   transform: scale(1.08);
 }
 
-/* Link underline animation */
-.link-underline {
-  position: relative;
-}
 
-.link-underline::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background: hsl(var(--accent));
-  transition: width 0.4s ease;
-}
-
-.link-underline:hover::after {
-  width: 100%;
-}
 
 /* Stagger animation delays */
 .stagger-1 { animation-delay: 0.1s; }

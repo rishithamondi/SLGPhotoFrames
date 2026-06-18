@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { CategoryCard } from "@/components/categories/CategoryCard";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 import { categories } from "@/data/products";
 import { Button } from "@/components/ui/button";
 
@@ -24,6 +25,7 @@ const categoriesWithImages = categories.map((cat) => ({
 }));
 
 export default function CategoriesPage() {
+  useDocumentTitle("Shop by Category");
   return (
     <div className="min-h-screen bg-background">
       <section className="py-10 sm:py-12 md:py-16 border-b border-border/50">
