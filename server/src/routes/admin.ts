@@ -90,9 +90,12 @@ router.post('/login', async (req: Request, res: Response) => {
       return;
     }
 
+    const lookupEmail = email.toLowerCase().trim();
     const admin = await db.query.admins.findFirst({
-      where: eq(admins.email, email.toLowerCase().trim()),
+      where: eq(admins.email, lookupEmail),
     });
+
+    console.log(`[AI Login Debug] Email: "${lookupEmail}", Admin Found: ${!!admin}`);
 
     if (!admin) {
       res.status(401).json({ error: 'Invalid email or password' });
@@ -100,6 +103,8 @@ router.post('/login', async (req: Request, res: Response) => {
     }
 
     const isMatch = await bcrypt.compare(password, admin.passwordHash);
+    console.log(`[AI Login Debug] Email: "${lookupEmail}", Password Match: ${isMatch}`);
+
     if (!isMatch) {
       res.status(401).json({ error: 'Invalid email or password' });
       return;
