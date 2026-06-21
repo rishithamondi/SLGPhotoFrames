@@ -458,6 +458,10 @@ export default function AdminDashboard() {
     );
   }
 
+  if (!isAuthenticated && !isAuthLoading) {
+    return null;
+  }
+
   return (
     <div className="h-screen bg-background text-foreground flex flex-col md:flex-row font-sans overflow-hidden">
       
