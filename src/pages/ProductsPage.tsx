@@ -1,13 +1,13 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { getWhatsAppUrl } from "@/config/site";
 import { useDocumentTitle } from "@/hooks/use-document-title";
-import { Search, SlidersHorizontal, X } from "lucide-react";
+import { Search, SlidersHorizontal, X, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ProductCard } from "@/components/products/ProductCard";
 import { ProductSkeleton } from "@/components/products/ProductSkeleton";
-import { products, categories } from "@/data/products";
+import { products as staticProducts } from "@/data/products"; // Only used for deriving material filter list
 import { cn } from "@/lib/utils";
 import {
   Select,
@@ -17,15 +17,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
+import { useProducts, useCategories } from "@/hooks/useCatalog";
+import { useDebounce } from "@/hooks/use-debounce";
 
-const materials = Array.from(new Set(products.flatMap((p) => p.materials))).sort();
+const materials = Array.from(new Set(staticProducts.flatMap((p) => p.materials))).sort();
 
 type SortOption = "latest" | "price-low" | "price-high" | "popular";
 
 export default function ProductsPage() {
   useDocumentTitle("Our Products");
   const [searchParams, setSearchParams] = useSearchParams();
-  const [isLoading] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
 
   const [search, setSearch] = useState(searchParams.get("search") || "");
@@ -33,26 +34,44 @@ export default function ProductsPage() {
   const [selectedMaterial, setSelectedMaterial] = useState("all");
   const [priceRange, setPriceRange] = useState([0, 5000]);
   const [sortBy, setSortBy] = useState<SortOption>("latest");
+  const [page, setPage] = useState(1);
 
-  const filteredProducts = useMemo(() => {
-    let result = [...products];
-    if (search) {
-      const q = search.toLowerCase();
-      result = result.filter((p) => p.name.toLowerCase().includes(q) || p.description.toLowerCase().includes(q) || p.materials.some((m) => m.toLowerCase().includes(q)));
-    }
-    if (selectedCategory !== "all") result = result.filter((p) => p.category === selectedCategory);
-    if (selectedMaterial !== "all") result = result.filter((p) => p.materials.some((m) => m.toLowerCase().includes(selectedMaterial.toLowerCase())));
-    result = result.filter((p) => p.basePrice >= priceRange[0] && p.basePrice <= priceRange[1]);
-    switch (sortBy) {
-      case "price-low": result.sort((a, b) => a.basePrice - b.basePrice); break;
-      case "price-high": result.sort((a, b) => b.basePrice - a.basePrice); break;
-      case "popular": result.sort((a, b) => (b.popular ? 1 : 0) - (a.popular ? 1 : 0)); break;
-    }
-    return result;
-  }, [search, selectedCategory, selectedMaterial, priceRange, sortBy]);
+  // Debounce rapid inputs
+  const debouncedSearch = useDebounce(search, 500);
+  const debouncedPriceRange = useDebounce(priceRange, 300);
+
+  // Reset page when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, selectedCategory, selectedMaterial, debouncedPriceRange, sortBy]);
+
+  // Fetch Categories
+  const { data: categories = [] } = useCategories();
+
+  // Fetch Products with Server-Side Filtering
+  const { data: productsData, isLoading, isError, error } = useProducts({
+    search: debouncedSearch || undefined,
+    category: selectedCategory === "all" ? undefined : selectedCategory,
+    material: selectedMaterial === "all" ? undefined : selectedMaterial,
+    minPrice: debouncedPriceRange[0],
+    maxPrice: debouncedPriceRange[1] < 5000 ? debouncedPriceRange[1] : undefined,
+    sort: sortBy,
+    limit: 12,
+    page: page
+  });
+
+  const filteredProducts = productsData?.products || [];
+  const totalPages = productsData?.pagination?.pages || 1;
+  const currentPage = productsData?.pagination?.currentPage || 1;
 
   const clearFilters = () => {
-    setSearch(""); setSelectedCategory("all"); setSelectedMaterial("all"); setPriceRange([0, 5000]); setSortBy("latest"); setSearchParams({});
+    setSearch(""); 
+    setSelectedCategory("all"); 
+    setSelectedMaterial("all"); 
+    setPriceRange([0, 5000]); 
+    setSortBy("latest"); 
+    setSearchParams({});
+    setPage(1);
   };
 
   const hasActiveFilters = search || selectedCategory !== "all" || selectedMaterial !== "all" || priceRange[0] > 0 || priceRange[1] < 5000;
@@ -115,7 +134,7 @@ export default function ProductsPage() {
           <div className="flex flex-wrap gap-2 mb-6">
             {selectedCategory !== "all" && (
               <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">
-                {categories.find(c => c.id === selectedCategory)?.name}
+                {categories.find(c => c.id === selectedCategory)?.name || selectedCategory}
                 <button onClick={() => setSelectedCategory("all")} aria-label="Remove category filter"><X className="h-3 w-3" /></button>
               </span>
             )}
@@ -219,9 +238,10 @@ export default function ProductsPage() {
           <div className="flex-1 min-w-0">
             <p className="text-xs text-muted-foreground mb-4 sm:mb-5">
               {(() => {
-                if (!hasActiveFilters) return `Showing all ${products.length} products`;
+                if (isLoading) return "Loading products...";
+                if (!hasActiveFilters) return `Showing all ${productsData?.pagination?.total || filteredProducts.length} products`;
                 
-                let text = `Showing ${filteredProducts.length}`;
+                let text = `Showing ${productsData?.pagination?.total || filteredProducts.length}`;
                 
                 if (selectedCategory !== "all") {
                   const catName = categories.find(c => c.id === selectedCategory)?.name || "Products";
@@ -237,30 +257,66 @@ export default function ProductsPage() {
               })()}
             </p>
 
-            {isLoading ? (
+            {isError ? (
+              <div className="text-center py-12 sm:py-20 bg-destructive/10 border border-destructive/20 rounded-xl px-4 text-destructive">
+                <AlertCircle className="h-10 w-10 mx-auto mb-4" />
+                <h2 className="font-serif text-xl sm:text-2xl font-bold mb-2">Error Loading Products</h2>
+                <p className="text-sm max-w-md mx-auto">{error instanceof Error ? error.message : "Could not connect to the server."}</p>
+              </div>
+            ) : isLoading ? (
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
                 {Array.from({ length: 6 }).map((_, i) => <ProductSkeleton key={i} />)}
               </div>
             ) : filteredProducts.length > 0 ? (
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
-                {filteredProducts.map((product, index) => (
-                  <div key={product.id} className="animate-fade-up" style={{ animationDelay: `${index * 40}ms` }}>
-                    <ProductCard product={product} />
+              <>
+                <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
+                  {filteredProducts.map((product, index) => (
+                    <div key={product.id} className="animate-fade-up" style={{ animationDelay: `${(index % 12) * 40}ms` }}>
+                      <ProductCard product={product} />
+                    </div>
+                  ))}
+                </div>
+                
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                  <div className="flex justify-center items-center gap-4 mt-10">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setPage(p => Math.max(1, p - 1))}
+                      disabled={currentPage === 1}
+                    >
+                      Previous
+                    </Button>
+                    <span className="text-sm font-medium text-muted-foreground">
+                      Page {currentPage} of {totalPages}
+                    </span>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                      disabled={currentPage === totalPages}
+                    >
+                      Next
+                    </Button>
                   </div>
-                ))}
-              </div>
+                )}
+              </>
             ) : selectedCategory === "custom-orders" ? (
               <div className="text-center py-12 sm:py-20 bg-card border border-border/50 rounded-xl px-4">
                 <h2 className="font-serif text-2xl sm:text-3xl font-bold text-foreground mb-3">Custom Orders Coming Soon</h2>
                 <p className="text-muted-foreground text-sm sm:text-base mb-6 max-w-xl mx-auto">
                   Personalized devotional frames, custom gift articles, wedding gifts, and special orders can be requested directly through WhatsApp.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                  <a href={getWhatsAppUrl("Hi, I'm interested in a custom order. Can you share details?")} target="_blank" rel="noopener noreferrer">
-                    <Button variant="gold" size="lg" className="w-full sm:w-auto">WhatsApp Enquiry</Button>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center items-center max-w-md mx-auto">
+                  <a 
+                    href={getWhatsAppUrl("Hi, I'm interested in a custom order. Can you share details?")} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="w-full sm:w-auto"
+                  >
+                    <Button variant="gold" size="lg" className="w-full">WhatsApp Enquiry</Button>
                   </a>
-                  <Link to="/contact">
-                    <Button variant="outline" size="lg" className="w-full sm:w-auto">Contact Us</Button>
+                  <Link to="/contact" className="w-full sm:w-auto">
+                    <Button variant="outline" size="lg" className="w-full">Contact Us</Button>
                   </Link>
                 </div>
               </div>

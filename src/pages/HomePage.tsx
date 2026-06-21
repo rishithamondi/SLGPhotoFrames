@@ -4,8 +4,9 @@ import { useDocumentTitle } from "@/hooks/use-document-title";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/products/ProductCard";
 import { CategoryCard } from "@/components/categories/CategoryCard";
-import { products, categories } from "@/data/products";
+import { ProductSkeleton } from "@/components/products/ProductSkeleton";
 import { siteConfig, getWhatsAppUrl, getCallUrl } from "@/config/site";
+import { useProducts, useCategories } from "@/hooks/useCatalog";
 
 // Home Page Assets
 import heroBanner from "@/assets/home/hero-banner.jpg";
@@ -26,12 +27,6 @@ const categoryImages: Record<string, string> = {
   "custom-orders": categoryCustom,
 };
 
-const featuredProducts = products.filter((p) => p.featured).slice(0, 8);
-const categoriesWithImages = categories.map((cat) => ({
-  ...cat,
-  image: categoryImages[cat.id] || cat.image,
-}));
-
 const features = [
   { icon: Sparkles, title: "Artisan Quality", description: "Each piece is made with love and attention to detail" },
   { icon: Shield, title: "Premium Materials", description: "We use only quality woods, glass, and metals" },
@@ -41,6 +36,16 @@ const features = [
 
 export default function HomePage() {
   useDocumentTitle();
+
+  const { data: featuredData, isLoading: isLoadingFeatured } = useProducts({ featured: true, limit: 8 });
+  const featuredProducts = featuredData?.products || [];
+
+  const { data: categories = [], isLoading: isLoadingCategories } = useCategories();
+  const categoriesWithImages = categories.map((cat) => ({
+    ...cat,
+    image: categoryImages[cat.id] || cat.imageUrl || cat.image,
+  }));
+
   return (
     <div>
       {/* Hero Section - Full Width Layout */}
@@ -157,13 +162,19 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
-            {featuredProducts.map((product, index) => (
-              <div key={product.id} className="animate-fade-up" style={{ animationDelay: `${index * 80}ms` }}>
-                <ProductCard product={product} />
-              </div>
-            ))}
-          </div>
+          {isLoadingFeatured ? (
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
+               {Array.from({ length: 4 }).map((_, i) => <ProductSkeleton key={i} />)}
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
+              {featuredProducts.map((product, index) => (
+                <div key={product.id} className="animate-fade-up" style={{ animationDelay: `${index * 80}ms` }}>
+                  <ProductCard product={product} />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -178,13 +189,21 @@ export default function HomePage() {
             <p className="text-muted-foreground text-sm sm:text-base">Find exactly what you're looking for</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-            {categoriesWithImages.slice(0, 5).map((category, index) => (
-              <div key={category.id} className="animate-fade-up" style={{ animationDelay: `${index * 80}ms` }}>
-                <CategoryCard category={category} />
-              </div>
-            ))}
-          </div>
+          {isLoadingCategories ? (
+             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+               {Array.from({ length: 3 }).map((_, i) => (
+                 <div key={i} className="h-64 bg-muted rounded-2xl animate-pulse" />
+               ))}
+             </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+              {categoriesWithImages.slice(0, 5).map((category, index) => (
+                <div key={category.id} className="animate-fade-up" style={{ animationDelay: `${index * 80}ms` }}>
+                  <CategoryCard category={category} />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

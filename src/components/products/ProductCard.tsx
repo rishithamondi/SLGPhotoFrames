@@ -15,12 +15,12 @@ export function ProductCard({ product, className }: ProductCardProps) {
     <Link
       to={`/products/${product.id}`}
       className={cn(
-        "group block bg-card rounded-xl overflow-hidden border border-border card-sacred img-zoom",
+        "group flex flex-col h-full bg-card rounded-xl overflow-hidden border border-border card-sacred img-zoom",
         className
       )}
     >
       {/* Image */}
-      <div className="relative aspect-square overflow-hidden bg-white flex items-center justify-center p-2 sm:p-3.5 border-b border-border/40">
+      <div className="relative aspect-square overflow-hidden bg-muted flex items-center justify-center border-b border-border/40 shrink-0">
         {isPlaceholder ? (
           // Placeholder for product image
           <div className="w-full h-full flex flex-col items-center justify-center gap-2 bg-muted">
@@ -34,7 +34,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
           <img
             src={product.images[0]}
             alt={product.name}
-            className="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
           />
         )}
@@ -64,16 +64,18 @@ export function ProductCard({ product, className }: ProductCardProps) {
       </div>
 
       {/* Content */}
-      <div className="p-3 sm:p-4">
-        <h3 className="font-serif text-sm sm:text-base font-semibold text-foreground mb-1 line-clamp-2 group-hover:text-accent transition-colors duration-300">
-          {product.name}
-        </h3>
+      <div className="p-3 sm:p-4 flex-1 flex flex-col justify-between">
+        <div className="space-y-1 mb-2.5 sm:mb-3">
+          <h3 className="font-serif text-sm sm:text-base font-semibold text-foreground line-clamp-2 group-hover:text-accent transition-colors duration-300 min-h-[2.5rem] sm:min-h-[3rem] flex items-center">
+            {product.name}
+          </h3>
 
-        <p className="text-[10px] sm:text-xs text-muted-foreground mb-2 sm:mb-3 line-clamp-1">
-          {product.materials.slice(0, 2).join(" · ")}
-        </p>
+          <p className="text-[10px] sm:text-xs text-muted-foreground line-clamp-1">
+            {product.materials && product.materials.length > 0 ? product.materials.slice(0, 2).join(" · ") : "\u00A0"}
+          </p>
+        </div>
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mt-auto">
           <div>
             <p className="text-[10px] sm:text-xs text-muted-foreground">Starting from</p>
             <p className="font-bold text-primary text-lg sm:text-xl group-hover:text-accent transition-colors duration-300">
@@ -81,7 +83,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
             </p>
           </div>
           <p className="text-[10px] sm:text-xs text-muted-foreground">
-            {product.sizes.length} sizes
+            {product.sizes ? `${product.sizes.length} sizes` : "0 sizes"}
           </p>
         </div>
       </div>
