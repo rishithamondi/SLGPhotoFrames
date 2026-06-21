@@ -154,10 +154,12 @@ export function Footer() {
             <p className="text-[10px] sm:text-xs text-muted-foreground">
               © {currentYear} {siteConfig.name}. All rights reserved.
             </p>
-            <p className="text-[10px] sm:text-xs text-muted-foreground flex items-center justify-center gap-2">
-              <span className="w-1 h-1 rounded-full bg-primary" />
-              Created by Rishitha Shivanandh✨
-            </p>
+            <div className="flex items-center gap-3">
+              <p className="text-[10px] sm:text-xs text-muted-foreground flex items-center justify-center gap-2">
+                <span className="w-1 h-1 rounded-full bg-primary" />
+                Created by Rishitha Shivanandh✨
+              </p>
+            </div>
           </div>
         </div>
       </div>

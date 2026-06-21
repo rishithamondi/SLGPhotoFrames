@@ -1,31 +1,54 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useDocumentTitle } from "@/hooks/use-document-title";
-import { ArrowLeft, Heart, Phone, MessageCircle, Truck, Shield, RotateCcw, ChevronLeft, ChevronRight, Gift, Package, Clock, Palette, Users, Zap, MapPin, Calendar, X, LucideIcon } from "lucide-react";
+import { ArrowLeft, Heart, Phone, MessageCircle, Truck, Shield, RotateCcw, ChevronLeft, ChevronRight, Gift, Package, Clock, Palette, Users, Zap, MapPin, Calendar, X, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ProductCard } from "@/components/products/ProductCard";
-import { products } from "@/data/products";
+import { ProductSkeleton } from "@/components/products/ProductSkeleton";
 import { useWishlist } from "@/contexts/WishlistContext";
 import { siteConfig, getWhatsAppUrl, getCallUrl } from "@/config/site";
 import { cn } from "@/lib/utils";
 import { UrgentOrderSection, MobileUrgentBar, QuickReplyButton, GiftMode } from "@/components/products/ProductDetailComponents";
+import { useProduct, useProducts } from "@/hooks/useCatalog";
 
 
 export default function ProductDetailPage() {
   const { id } = useParams();
-  const product = products.find((p) => p.id === id);
+  const { data: product, isLoading, isError, error } = useProduct(id || "");
+  const { data: relatedProductsData } = useProducts(product ? { category: product.category, limit: 5 } : undefined);
+
   useDocumentTitle(product ? product.name : "Product Details");
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [activeTab, setActiveTab] = useState<"description" | "materials" | "delivery">("description");
 
-  if (!product) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen container-custom px-4 py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="aspect-square bg-muted rounded-xl animate-pulse"></div>
+          <div className="space-y-4">
+            <div className="h-8 bg-muted rounded w-3/4 animate-pulse"></div>
+            <div className="h-6 bg-muted rounded w-1/4 animate-pulse"></div>
+            <div className="h-32 bg-muted rounded w-full animate-pulse"></div>
+            <div className="h-12 bg-muted rounded w-full animate-pulse"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError || !product) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="font-serif text-2xl font-bold text-foreground mb-4">Product Not Found</h1>
+        <div className="text-center bg-destructive/10 border border-destructive/20 p-8 rounded-xl max-w-md">
+          <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
+          <h1 className="font-serif text-2xl font-bold text-destructive mb-2">Product Not Found</h1>
+          <p className="text-muted-foreground mb-6 text-sm">{error instanceof Error ? error.message : "The product you're looking for doesn't exist or has been removed."}</p>
           <Link to="/products"><Button>Back to Products</Button></Link>
         </div>
       </div>
@@ -36,11 +59,9 @@ export default function ProductDetailPage() {
   const selectedSizeData = product.sizes.find((s) => s.name === selectedSize);
   const currentPrice = selectedSizeData?.price || product.basePrice;
   const productImages = product.images;
-  const relatedProducts = products.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4);
+  const relatedProducts = relatedProductsData?.products.filter(p => p.id !== product.id).slice(0, 4) || [];
 
   const toggleWishlist = () => inWishlist ? removeFromWishlist(product.id) : addToWishlist(product.id);
-
-  const scrollRef = useRef<HTMLDivElement>(null);
   
   const scrollToImage = (index: number) => {
     setCurrentImageIndex(index);
@@ -138,7 +159,7 @@ export default function ProductDetailPage() {
           {/* Product Info — sticky on desktop */}
           <div className="lg:sticky lg:top-24 lg:self-start">
             <div className="flex flex-wrap gap-1.5 mb-2 sm:mb-3">
-              {product.tags.map((tag) => (
+              {product.tags?.map((tag) => (
                 <Badge key={tag} variant="secondary" className="text-[10px] uppercase tracking-wider">{tag}</Badge>
               ))}
             </div>
@@ -151,26 +172,28 @@ export default function ProductDetailPage() {
             </div>
 
             {/* Size Selection */}
-            <div className="mb-6">
-              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Select Size</h3>
-              <div className="flex flex-wrap gap-2">
-                {product.sizes.map((size) => (
-                  <button
-                    key={size.name}
-                    onClick={() => setSelectedSize(size.name)}
-                    className={cn(
-                      "px-4 py-2.5 rounded-lg border text-sm transition-all duration-200",
-                      selectedSize === size.name
-                        ? "border-primary bg-primary text-primary-foreground"
-                        : "border-border bg-card text-foreground hover:border-primary/50"
-                    )}
-                  >
-                    <span className="font-medium">{size.name}</span>
-                    <span className="text-xs ml-1 opacity-70">₹{size.price.toLocaleString()}</span>
-                  </button>
-                ))}
+            {product.sizes?.length > 0 && (
+              <div className="mb-6">
+                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Select Size</h3>
+                <div className="flex flex-wrap gap-2">
+                  {product.sizes.map((size) => (
+                    <button
+                      key={size.name}
+                      onClick={() => setSelectedSize(size.name)}
+                      className={cn(
+                        "px-4 py-2.5 rounded-lg border text-sm transition-all duration-200",
+                        selectedSize === size.name
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border bg-card text-foreground hover:border-primary/50"
+                      )}
+                    >
+                      <span className="font-medium">{size.name}</span>
+                      <span className="text-xs ml-1 opacity-70">₹{size.price.toLocaleString()}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Quick Reply Buttons */}
             <div className="mb-4">
@@ -273,7 +296,7 @@ export default function ProductDetailPage() {
                 {activeTab === "description" && <p>{product.description}</p>}
                 {activeTab === "materials" && (
                   <div className="flex flex-wrap gap-2">
-                    {product.materials.map((m) => <Badge key={m} variant="outline">{m}</Badge>)}
+                    {product.materials?.map((m) => <Badge key={m} variant="outline">{m}</Badge>)}
                   </div>
                 )}
                 {activeTab === "delivery" && (

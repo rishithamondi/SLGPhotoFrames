@@ -3,14 +3,34 @@ import { Trash2, ArrowRight, Heart } from "lucide-react";
 import { useDocumentTitle } from "@/hooks/use-document-title";
 import { Button } from "@/components/ui/button";
 import { useWishlist } from "@/contexts/WishlistContext";
-import { products } from "@/data/products";
 import { getWhatsAppUrl } from "@/config/site";
+import { useProducts } from "@/hooks/useCatalog";
+import { ProductSkeleton } from "@/components/products/ProductSkeleton";
 
 export default function WishlistPage() {
   useDocumentTitle("Your Wishlist");
   const { wishlist, removeFromWishlist, clearWishlist } = useWishlist();
-  const wishlistProducts = products.filter((p) => wishlist.includes(p.id));
+  
+  // Fetch all products since we need to resolve IDs. 
+  // In a larger app, we'd have a specific endpoint or POST request to fetch by IDs
+  const { data: productsData, isLoading } = useProducts({ limit: 100 });
+  
+  const wishlistProducts = (productsData?.products || []).filter((p) => wishlist.includes(p.id));
   const totalEstimate = wishlistProducts.reduce((sum, p) => sum + p.basePrice, 0);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background py-12 md:py-16">
+        <div className="container-custom">
+           <div className="grid grid-cols-1 gap-4">
+             {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="h-24 bg-muted rounded-xl animate-pulse" />
+             ))}
+           </div>
+        </div>
+      </div>
+    );
+  }
 
   if (wishlistProducts.length === 0) {
     return (
@@ -53,13 +73,13 @@ export default function WishlistPage() {
           {wishlistProducts.map((product) => (
             <div key={product.id} className="flex gap-4 p-4 bg-card rounded-xl border border-border/50 transition-all duration-200 hover:shadow-card">
               <Link to={`/products/${product.id}`} className="shrink-0 w-20 h-20 md:w-24 md:h-24 rounded-lg overflow-hidden bg-white border border-border/50 flex items-center justify-center p-1.5">
-                <img src={product.images[0]} alt={product.name} className="max-w-full max-h-full object-contain" loading="lazy" />
+                <img src={product.images?.[0] || ""} alt={product.name} className="max-w-full max-h-full object-contain" loading="lazy" />
               </Link>
               <div className="flex-1 min-w-0">
                 <Link to={`/products/${product.id}`}>
                   <h3 className="font-serif text-base font-semibold text-foreground hover:text-primary transition-colors line-clamp-1">{product.name}</h3>
                 </Link>
-                <p className="text-xs text-muted-foreground mb-1.5">{product.materials.slice(0, 2).join(" · ")}</p>
+                <p className="text-xs text-muted-foreground mb-1.5">{product.materials?.slice(0, 2).join(" · ")}</p>
                 <p className="font-semibold text-foreground text-sm">Starting ₹{product.basePrice.toLocaleString()}</p>
               </div>
               <div className="flex flex-col justify-between items-end">

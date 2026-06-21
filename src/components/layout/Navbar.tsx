@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Sun, Moon } from "lucide-react";
+import { Menu, X, Sun, Moon, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/contexts/ThemeContext";
 import { cn } from "@/lib/utils";
@@ -101,6 +101,17 @@ export function Navbar() {
             </Button>
 
             <Button
+              asChild
+              variant="ghost"
+              size="icon"
+              className="hidden sm:flex text-muted-foreground hover:text-foreground"
+            >
+              <Link to="/admin/login" aria-label="Admin Login">
+                <Lock className="h-[18px] w-[18px]" />
+              </Link>
+            </Button>
+
+            <Button
               variant="ghost"
               size="icon"
               className="md:hidden text-muted-foreground"
@@ -135,12 +146,12 @@ export function Navbar() {
                 {link.name}
               </Link>
             ))}
-            <div className="px-4 pt-2">
+            <div className="px-4 pt-2 flex flex-col gap-2">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={toggleTheme}
-                className="text-muted-foreground"
+                className="text-muted-foreground justify-start w-full"
                 aria-label="Toggle theme"
               >
                 {theme === "light" ? (
@@ -148,6 +159,16 @@ export function Navbar() {
                 ) : (
                   <><Sun className="h-4 w-4 mr-2" /> Light Mode</>
                 )}
+              </Button>
+              <Button
+                asChild
+                variant="ghost"
+                size="sm"
+                className="text-muted-foreground justify-start w-full"
+              >
+                <Link to="/admin/login" aria-label="Admin Login">
+                  <Lock className="h-4 w-4 mr-2" /> Admin Login
+                </Link>
               </Button>
             </div>
           </div>

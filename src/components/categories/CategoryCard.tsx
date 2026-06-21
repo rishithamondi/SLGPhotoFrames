@@ -34,7 +34,7 @@ export function CategoryCard({ category, className }: CategoryCardProps) {
             <img
               src={category.image}
               alt={category.name}
-              className="w-full h-full object-contain"
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               loading="lazy"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500" />
