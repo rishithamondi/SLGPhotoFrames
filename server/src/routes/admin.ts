@@ -711,17 +711,74 @@ Content Strategy Guidelines:
       ]
     };
 
-    console.log("[AI Generate] Calling Gemini...");
-    
+    console.log("[AI Generate] Initializing Gemini AI client...");
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: prompt,
-      config: {
-        responseMimeType: 'application/json',
-        responseSchema: schema
+
+    // Helper function to execute generation with retries on 503/UNAVAILABLE errors
+    const generateWithRetry = async (model: string): Promise<any> => {
+      const maxAttempts = 3;
+      const delays = [0, 2000, 4000];
+
+      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        console.log(`[AI Generate] Model: ${model}`);
+        console.log(`[AI Generate] Attempt ${attempt}/${maxAttempts}`);
+
+        if (attempt > 1) {
+          console.log(`[AI Generate] Waiting ${delays[attempt - 1] / 1000} seconds before retrying...`);
+          await new Promise((resolve) => setTimeout(resolve, delays[attempt - 1]));
+        }
+
+        try {
+          const res = await ai.models.generateContent({
+            model: model,
+            contents: prompt,
+            config: {
+              responseMimeType: 'application/json',
+              responseSchema: schema
+            }
+          });
+          return res;
+        } catch (err: any) {
+          const status = err.status || err.statusCode || (err.message && err.message.includes('503') ? 503 : undefined);
+          console.log(`[AI Generate] Model: ${model}`);
+          console.log(`[AI Generate] Status: ${status || '503 (inferred)'}`);
+          console.error(`[AI Generate] Error on attempt ${attempt}:`, err.message || err);
+
+          const is503 = status === 503 || (err.message && (
+            err.message.includes('503') || 
+            err.message.includes('UNAVAILABLE') || 
+            err.message.includes('high demand') ||
+            err.message.includes('overloaded')
+          ));
+
+          if (is503 && attempt < maxAttempts) {
+            continue;
+          }
+          throw err;
+        }
       }
-    });
+    };
+
+    let response;
+    try {
+      console.log("[AI Generate] Attempting generation with primary model...");
+      response = await generateWithRetry('gemini-2.5-pro');
+    } catch (primaryErr: any) {
+      const status = primaryErr.status || primaryErr.statusCode || (primaryErr.message && primaryErr.message.includes('503') ? 503 : undefined);
+      const is503 = status === 503 || (primaryErr.message && (
+        primaryErr.message.includes('503') || 
+        primaryErr.message.includes('UNAVAILABLE') || 
+        primaryErr.message.includes('high demand') ||
+        primaryErr.message.includes('overloaded')
+      ));
+
+      if (is503) {
+        console.warn(`[AI Generate] Primary model 'gemini-2.5-pro' failed with 503/UNAVAILABLE after 3 attempts. Trying fallback model 'gemini-2.5-flash'...`);
+        response = await generateWithRetry('gemini-2.5-flash');
+      } else {
+        throw primaryErr; // Propagate non-503 errors (e.g. 403 Forbidden)
+      }
+    }
 
     console.log("[AI Generate] Gemini response received");
 
