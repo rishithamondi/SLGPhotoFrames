@@ -6,6 +6,7 @@ import { useWishlist } from "@/contexts/WishlistContext";
 import { getWhatsAppUrl } from "@/config/site";
 import { useProducts } from "@/hooks/useCatalog";
 import { ProductSkeleton } from "@/components/products/ProductSkeleton";
+import { getProductCardImage } from "@/lib/cloudinary";
 
 export default function WishlistPage() {
   useDocumentTitle("Your Wishlist");
@@ -73,7 +74,13 @@ export default function WishlistPage() {
           {wishlistProducts.map((product) => (
             <div key={product.id} className="flex gap-4 p-4 bg-card rounded-xl border border-border/50 transition-all duration-200 hover:shadow-card">
               <Link to={`/products/${product.id}`} className="shrink-0 w-20 h-20 md:w-24 md:h-24 rounded-lg overflow-hidden bg-white border border-border/50 flex items-center justify-center p-1.5">
-                <img src={product.images?.[0] || ""} alt={product.name} className="max-w-full max-h-full object-contain" loading="lazy" />
+                <img 
+                  src={getProductCardImage(product.images?.[0]) || ""} 
+                  alt={product.name} 
+                  className="max-w-full max-h-full object-contain" 
+                  loading="lazy" 
+                  decoding="async"
+                />
               </Link>
               <div className="flex-1 min-w-0">
                 <Link to={`/products/${product.id}`}>

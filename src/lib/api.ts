@@ -120,39 +120,63 @@ export async function fetchAdminProducts(params?: FetchProductsParams & { status
 }
 
 export async function createAdminProduct(productData: Partial<Product>): Promise<Product> {
-  const response = await fetch(`${BASE_URL}/admin/products`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...getAuthHeaders(),
-    },
-    body: JSON.stringify(productData),
-  });
+  console.log("[Save Flow] Step 3: Inside createAdminProduct API call, sending fetch request to /api/admin/products");
+  
+  try {
+    const response = await fetch(`${BASE_URL}/admin/products`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeaders(),
+      },
+      body: JSON.stringify(productData),
+    });
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.error || "Failed to create product");
+    console.log("[Save Flow] Step 3.1: API response status received:", response.status);
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error("[Save Flow] Step 3.2: API response returned error status:", errorData);
+      throw new Error(errorData.error || "Failed to create product");
+    }
+
+    const data = await response.json();
+    console.log("[Save Flow] Step 3.3: API call succeeded, payload data:", JSON.stringify(data));
+    return data;
+  } catch (apiErr) {
+    console.error("[Save Flow] Step 3.4: API fetch call caught exception:", apiErr);
+    throw apiErr;
   }
-
-  return response.json();
 }
 
 export async function updateAdminProduct(id: string, productData: Partial<Product>): Promise<Product> {
-  const response = await fetch(`${BASE_URL}/admin/products/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      ...getAuthHeaders(),
-    },
-    body: JSON.stringify(productData),
-  });
+  console.log(`[Save Flow] Step 3: Inside updateAdminProduct API call for ID ${id}, sending fetch request`);
+  
+  try {
+    const response = await fetch(`${BASE_URL}/admin/products/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeaders(),
+      },
+      body: JSON.stringify(productData),
+    });
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.error || "Failed to update product");
+    console.log("[Save Flow] Step 3.1: API response status received:", response.status);
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error("[Save Flow] Step 3.2: API response returned error status:", errorData);
+      throw new Error(errorData.error || "Failed to update product");
+    }
+
+    const data = await response.json();
+    console.log("[Save Flow] Step 3.3: API call succeeded, payload data:", JSON.stringify(data));
+    return data;
+  } catch (apiErr) {
+    console.error("[Save Flow] Step 3.4: API fetch call caught exception:", apiErr);
+    throw apiErr;
   }
-
-  return response.json();
 }
 
 export async function deleteAdminProduct(id: string, permanent?: boolean): Promise<{ message: string }> {
@@ -171,21 +195,32 @@ export async function deleteAdminProduct(id: string, permanent?: boolean): Promi
 }
 
 export async function uploadAdminImage(file: File): Promise<{ imageUrl: string }> {
+  console.log("[Save Flow] Step 2.2.1: Inside uploadAdminImage API call, preparation started for file:", file.name);
   const formData = new FormData();
   formData.append("image", file);
 
-  const response = await fetch(`${BASE_URL}/admin/upload`, {
-    method: "POST",
-    headers: { ...getAuthHeaders() },
-    body: formData,
-  });
+  try {
+    const response = await fetch(`${BASE_URL}/admin/upload`, {
+      method: "POST",
+      headers: { ...getAuthHeaders() },
+      body: formData,
+    });
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.error || "Failed to upload image");
+    console.log("[Save Flow] Step 2.2.2: Upload API response status received:", response.status);
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error("[Save Flow] Step 2.2.3: Upload API error response:", errorData);
+      throw new Error(errorData.error || "Failed to upload image");
+    }
+
+    const data = await response.json();
+    console.log("[Save Flow] Step 2.2.4: Upload API succeeded, URL payload:", JSON.stringify(data));
+    return data;
+  } catch (err) {
+    console.error("[Save Flow] Step 2.2.5: Upload API call encountered exception:", err);
+    throw err;
   }
-
-  return response.json();
 }
 
 export async function generateProductDetailsAI(payload: any): Promise<any> {

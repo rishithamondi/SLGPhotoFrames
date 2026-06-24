@@ -16,7 +16,10 @@
     "test:watch": "vitest",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx server/src/db/migrate.ts",
-    "db:seed": "tsx server/src/scripts/seed.ts"
+    "db:seed": "tsx server/src/scripts/seed.ts",
+    "db:migrate-images": "tsx server/src/scripts/migrate-images-to-cloudinary.ts",
+    "db:rollback-images": "tsx server/src/scripts/rollback-cloudinary-migration.ts",
+    "db:migration-report": "tsx server/src/scripts/generate-migration-report.ts"
   },
   "dependencies": {
     "@google/genai": "latest",
@@ -58,6 +61,7 @@
     "cors": "^2.8.6",
     "date-fns": "^3.6.0",
     "dotenv": "^17.4.2",
+    "cloudinary": "^2.2.0",
     "drizzle-orm": "^0.45.2",
     "embla-carousel-react": "^8.6.0",
     "express": "^5.2.1",

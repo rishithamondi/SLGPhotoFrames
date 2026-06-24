@@ -12,6 +12,7 @@ import {
   useGenerateProductDetailsAI
 } from "@/hooks/useAdminCatalog";
 import { Product } from "@/types/api";
+import { getProductCardImage, getProductThumbnailImage } from "@/lib/cloudinary";
 import { 
   LayoutDashboard, 
   Package, 
@@ -281,37 +282,51 @@ export default function AdminDashboard() {
 
   // --- Image Upload Handler ---
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("[Save Flow] Step 2: Image selection changed in handleImageUpload");
     const file = e.target.files?.[0];
-    if (!file) return;
+    if (!file) {
+      console.log("[Save Flow] Step 2.1: No file selected in handleImageUpload");
+      return;
+    }
 
+    console.log("[Save Flow] Step 2.2: Dispatching uploadImageMutation for file:", file.name);
     const promise = uploadImageMutation.mutateAsync(file);
     toast.promise(promise, {
       loading: "Uploading product image...",
       success: (data) => {
+        console.log("[Save Flow] Step 2.3: uploadImageMutation success, url:", data.imageUrl);
         setImages([data.imageUrl]); // Support single main image workflow
         return "Image uploaded successfully!";
       },
-      error: (err) => err.message || "Failed to upload image"
+      error: (err) => {
+        console.error("[Save Flow] Step 2.4: uploadImageMutation failed:", err);
+        return err.message || "Failed to upload image";
+      }
     });
   };
 
   // --- Form Submission ---
   const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("[Save Flow] Step 1: Save Product clicked");
 
     if (!smallTitle) {
+      console.log("[Save Flow] Step 1.1: Validation failed - smallTitle missing");
       toast.error("Small Title is required");
       return;
     }
     if (!categoryId) {
+      console.log("[Save Flow] Step 1.2: Validation failed - categoryId missing");
       toast.error("Category is required");
       return;
     }
     if (!basePrice || isNaN(parseFloat(basePrice))) {
+      console.log("[Save Flow] Step 1.3: Validation failed - basePrice invalid");
       toast.error("A valid base price is required");
       return;
     }
 
+    console.log("[Save Flow] Step 1.4: Validation passed, formatting payload");
     // Format materials & tags
     const formattedMaterials = materials
       ? materials.split(",").map(m => m.trim()).filter(m => m !== "")
@@ -351,21 +366,26 @@ export default function AdminDashboard() {
       images,
     };
 
+    console.log("[Save Flow] Step 1.5: Payload prepared:", JSON.stringify(payload));
+
     try {
       if (editingProduct) {
-        // Update mode
-        await updateProductMutation.mutateAsync({ id: editingProduct.id, productData: payload });
+        console.log("[Save Flow] Step 1.6: Triggering updateProductMutation (Edit mode) for ID:", editingProduct.id);
+        const updateResult = await updateProductMutation.mutateAsync({ id: editingProduct.id, productData: payload });
+        console.log("[Save Flow] Step 1.7: updateProductMutation completed successfully:", JSON.stringify(updateResult));
         toast.success("Product updated successfully!");
       } else {
-        // Create mode
-        await createProductMutation.mutateAsync(payload);
+        console.log("[Save Flow] Step 1.6: Triggering createProductMutation (Create mode)");
+        const createResult = await createProductMutation.mutateAsync(payload);
+        console.log("[Save Flow] Step 1.7: createProductMutation completed successfully:", JSON.stringify(createResult));
         toast.success("Product created successfully!");
       }
+      console.log("[Save Flow] Step 1.8: Closing modal and refreshing listings");
       setIsModalOpen(false);
       refetchStats();
       refetchProducts();
     } catch (err) {
-      console.error(err);
+      console.error("[Save Flow] Step 1.9: Save failed in catch block:", err);
       const error = err as Error;
       toast.error(error.message || "Failed to save product.");
     }
@@ -708,10 +728,12 @@ export default function AdminDashboard() {
                             <TableRow key={prod.id} className="border-border hover:bg-muted/30 transition-colors">
                               <TableCell>
                                 <img 
-                                  src={prod.imageUrl} 
+                                  src={getProductThumbnailImage(prod.imageUrl)} 
                                   alt={prod.smallTitle} 
                                   className="w-10 h-10 object-cover rounded border border-border"
                                   onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder.svg' }}
+                                  loading="lazy"
+                                  decoding="async"
                                 />
                               </TableCell>
                               <TableCell className="font-semibold text-foreground">{prod.smallTitle}</TableCell>
@@ -882,10 +904,12 @@ export default function AdminDashboard() {
                         <TableRow key={prod.id} className="border-border hover:bg-muted/30 transition-colors">
                           <TableCell>
                             <img 
-                              src={prod.images?.[0] || '/placeholder.svg'} 
+                              src={getProductThumbnailImage(prod.images?.[0] || '/placeholder.svg')} 
                               alt={prod.smallTitle} 
                               className="w-10 h-10 object-cover rounded border border-border"
                               onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder.svg' }}
+                              loading="lazy"
+                              decoding="async"
                             />
                           </TableCell>
                           <TableCell>
@@ -1067,10 +1091,12 @@ export default function AdminDashboard() {
                   <div className="flex flex-col sm:flex-row items-center gap-4 bg-secondary/20 p-4 rounded-xl border border-border">
                     <div className="relative w-28 h-28 border border-border rounded-lg overflow-hidden shrink-0 bg-background flex items-center justify-center">
                       <img 
-                        src={images[0]} 
+                        src={getProductCardImage(images[0])} 
                         alt="Product preview" 
                         className="w-full h-full object-cover"
                         onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder.svg' }}
+                        loading="lazy"
+                        decoding="async"
                       />
                       <Badge className="absolute top-1 left-1 text-[8px] bg-primary text-primary-foreground py-0.5 px-1 font-mono uppercase">
                         Active Image

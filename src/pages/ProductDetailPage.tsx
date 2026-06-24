@@ -11,6 +11,7 @@ import { siteConfig, getWhatsAppUrl, getCallUrl } from "@/config/site";
 import { cn } from "@/lib/utils";
 import { UrgentOrderSection, MobileUrgentBar, QuickReplyButton, GiftMode } from "@/components/products/ProductDetailComponents";
 import { useProduct, useProducts } from "@/hooks/useCatalog";
+import { getProductDetailImage, getProductThumbnailImage } from "@/lib/cloudinary";
 
 
 export default function ProductDetailPage() {
@@ -115,9 +116,11 @@ export default function ProductDetailPage() {
                 {productImages.map((img, i) => (
                   <div key={i} className="min-w-full h-full flex items-center justify-center p-6 snap-center shrink-0">
                     <img
-                      src={img}
+                      src={getProductDetailImage(img)}
                       alt={`${product.name} - Image ${i + 1}`}
                       className="max-w-full max-h-full object-contain transition-transform duration-500 lg:group-hover:scale-105"
+                      loading={i === 0 ? "eager" : "lazy"}
+                      decoding="async"
                     />
                   </div>
                 ))}
@@ -149,7 +152,13 @@ export default function ProductDetailPage() {
                     )}
                     aria-label={`View image ${i + 1}`}
                   >
-                    <img src={img} alt="" className="max-w-full max-h-full object-contain" />
+                    <img 
+                      src={getProductThumbnailImage(img)} 
+                      alt="" 
+                      className="max-w-full max-h-full object-contain" 
+                      loading="lazy"
+                      decoding="async"
+                    />
                   </button>
                 ))}
               </div>

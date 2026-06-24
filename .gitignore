@@ -25,3 +25,8 @@ public/uploads
 *.njsproj
 *.sln
 *.sw?
+
+# Cloudinary migration artifacts
+backups/
+migration-report.md
+cloudinary-audit-report.md

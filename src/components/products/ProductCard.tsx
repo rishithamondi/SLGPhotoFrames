@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Heart, ImageIcon } from "lucide-react";
 import { Product } from "@/data/products";
 import { cn } from "@/lib/utils";
+import { getProductCardImage } from "@/lib/cloudinary";
 
 interface ProductCardProps {
   product: Product;
@@ -32,10 +33,11 @@ export function ProductCard({ product, className }: ProductCardProps) {
           </div>
         ) : (
           <img
-            src={product.images[0]}
+            src={getProductCardImage(product.images[0])}
             alt={product.name}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
+            decoding="async"
           />
         )}
 

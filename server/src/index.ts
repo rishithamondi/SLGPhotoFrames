@@ -2,14 +2,26 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
+import fs from 'fs';
 import { eq, ilike, or, and, sql, desc, asc, gte, lte } from 'drizzle-orm';
 import { db } from './db';
 import { categories, products, productImages, productSizes } from './db/schema';
 import adminRouter from './routes/admin';
+import multer from 'multer';
+import { uploadBuffer } from './config/cloudinary';
+import { authenticateToken } from './middleware/auth';
 
 dotenv.config();
 
-
+// Helper to log errors to a file for remote debugging
+const logBackendError = (context: string, error: any) => {
+  const logMsg = `[${new Date().toISOString()}] Context: ${context}\nError: ${error instanceof Error ? error.stack : String(error)}\n\n`;
+  try {
+    fs.appendFileSync(path.join(process.cwd(), 'backend-errors.log'), logMsg);
+  } catch (e) {
+    console.error('Failed to write to backend-errors.log:', e);
+  }
+};
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -19,6 +31,52 @@ app.use(express.json());
 
 // Serve local uploads
 app.use('/uploads', express.static(path.join(process.cwd(), 'public/uploads')));
+
+// Configure multer memory storage for Cloudinary upload
+const memoryStorage = multer.memoryStorage();
+const uploadMemory = multer({
+  storage: memoryStorage,
+  fileFilter: (req, file, cb) => {
+    const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    const allowedExtensions = /jpe?g|png|webp/i;
+    
+    const mimetype = allowedMimeTypes.includes(file.mimetype);
+    const extname = allowedExtensions.test(path.extname(file.originalname).toLowerCase());
+    
+    if (mimetype && extname) {
+      return cb(null, true);
+    }
+    cb(new Error('Invalid file type. Only JPG, JPEG, PNG, and WEBP images are allowed. (SVGs are not allowed)'));
+  },
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+});
+
+// POST /api/upload/image - Upload image directly to Cloudinary
+app.post('/api/upload/image', authenticateToken, (req: any, res: any) => {
+  uploadMemory.single('image')(req, res, async (err) => {
+    if (err) {
+      console.error('Upload API route error:', err);
+      return res.status(400).json({ error: err.message });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ error: 'No image uploaded' });
+    }
+
+    try {
+      const result = await uploadBuffer(req.file.buffer);
+      res.json({
+        imageUrl: result.secure_url,
+        publicId: result.public_id,
+        secure_url: result.secure_url,
+        public_id: result.public_id
+      });
+    } catch (uploadError) {
+      console.error('Failed to upload image to Cloudinary:', uploadError);
+      res.status(500).json({ error: 'Failed to upload image to Cloudinary' });
+    }
+  });
+});
 
 // Register Admin API Routes
 app.use('/api/admin', adminRouter);
@@ -35,6 +93,7 @@ app.get('/api/categories', async (req, res) => {
     res.json(allCategories);
   } catch (error) {
     console.error('Error fetching categories:', error);
+    logBackendError('GET /api/categories', error);
     res.status(500).json({ error: 'Failed to fetch categories' });
   }
 });
@@ -167,6 +226,7 @@ app.get('/api/products', async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching products:', error);
+    logBackendError('GET /api/products', error);
     res.status(500).json({ error: 'Failed to fetch products' });
   }
 });
@@ -233,6 +293,7 @@ app.get('/api/products/:slugOrId', async (req, res) => {
     res.json(formattedProduct);
   } catch (error) {
     console.error('Error fetching product details:', error);
+    logBackendError('GET /api/products/:slugOrId', error);
     res.status(500).json({ error: 'Failed to fetch product details' });
   }
 });

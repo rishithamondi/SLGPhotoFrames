@@ -22,29 +22,20 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname);
-    cb(null, 'product-' + uniqueSuffix + ext);
-  },
-});
+const storage = multer.memoryStorage();
 
 const upload = multer({
   storage: storage,
   fileFilter: (req, file, cb) => {
-    const filetypes = /jpeg|jpg|png|webp|svg/;
+    const filetypes = /jpeg|jpg|png|webp/i;
     const mimetype = filetypes.test(file.mimetype);
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
     if (mimetype && extname) {
       return cb(null, true);
     }
-    cb(new Error('Only images are allowed'));
+    cb(new Error('Only images are allowed (JPG, JPEG, PNG, and WEBP). SVGs are not allowed.'));
   },
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
 });
 
 // --- HELPER FUNCTIONS ---
@@ -173,22 +164,32 @@ router.get('/stats', authenticateToken, async (req: Request, res: Response) => {
 
 // POST /api/admin/upload
 router.post('/upload', authenticateToken, (req: Request, res: Response) => {
-  upload.single('image')(req, res, (err) => {
+  console.log("[Save Flow] Step 2.2.1.1: Backend received POST /api/admin/upload request");
+  upload.single('image')(req, res, async (err) => {
     if (err) {
-      console.error('File upload error:', err);
+      console.error('[Save Flow] Step 2.2.1.2: Multer processing error:', err);
       res.status(400).json({ error: err.message });
       return;
     }
 
     if (!req.file) {
+      console.error('[Save Flow] Step 2.2.1.3: No file found in request');
       res.status(400).json({ error: 'No image uploaded' });
       return;
     }
 
-    // Structure path so Cloudinary can replace it later
-    // Return relative URL /uploads/product-xxxx.jpg
-    const imageUrl = `/uploads/${req.file.filename}`;
-    res.json({ imageUrl });
+    console.log('[Save Flow] Step 2.2.1.4: File buffer ready. size:', req.file.buffer.length);
+
+    try {
+      console.log('[Save Flow] Step 2.2.1.5: Calling Cloudinary uploadBuffer...');
+      const { uploadBuffer } = await import('../config/cloudinary');
+      const result = await uploadBuffer(req.file.buffer);
+      console.log('[Save Flow] Step 2.2.1.6: Cloudinary upload succeeded, URL:', result.secure_url);
+      res.json({ imageUrl: result.secure_url });
+    } catch (uploadErr) {
+      console.error('[Save Flow] Step 2.2.1.7: Cloudinary upload exception caught:', uploadErr);
+      res.status(500).json({ error: 'Failed to upload image to Cloudinary' });
+    }
   });
 });
 
@@ -331,6 +332,7 @@ router.get('/products/:id', authenticateToken, async (req: Request, res: Respons
 
 // POST /api/admin/products (Create a product)
 router.post('/products', authenticateToken, async (req: Request, res: Response) => {
+  console.log("[Save Flow] Step 3.0.1: Backend received POST /api/admin/products request");
   try {
     const {
       smallTitle,
@@ -355,16 +357,21 @@ router.post('/products', authenticateToken, async (req: Request, res: Response) 
       images, // Array of string URLs
     } = req.body;
 
+    console.log("[Save Flow] Step 3.0.2: Extracted body properties, smallTitle:", smallTitle, "basePrice:", basePrice);
+
     if (!smallTitle || !categoryId || !basePrice) {
+      console.error("[Save Flow] Step 3.0.3: Validation failed on backend. smallTitle, categoryId, or basePrice missing");
       res.status(400).json({ error: 'Small title, category, and base price are required' });
       return;
     }
 
-    // Uniqueness validation and automatic slug generation
+    console.log("[Save Flow] Step 3.0.4: Calling getUniqueSlug for smallTitle:", smallTitle);
     const slug = await getUniqueSlug(smallTitle);
+    console.log("[Save Flow] Step 3.0.5: Slug generated:", slug);
 
+    console.log("[Save Flow] Step 3.0.6: Starting database transaction...");
     const newProduct = await db.transaction(async (tx) => {
-      // 1. Insert product record
+      console.log("[Save Flow] Step 3.0.7: Inside transaction, inserting product record...");
       const [productRecord] = await tx.insert(products).values({
         slug,
         smallTitle,
@@ -388,9 +395,11 @@ router.post('/products', authenticateToken, async (req: Request, res: Response) 
       }).returning();
 
       const productId = productRecord.id;
+      console.log("[Save Flow] Step 3.0.8: Product inserted with UUID:", productId);
 
       // 2. Insert sizes
       if (sizes && sizes.length > 0) {
+        console.log("[Save Flow] Step 3.0.9: Inserting product sizes...");
         for (const sz of sizes) {
           await tx.insert(productSizes).values({
             productId,
@@ -402,6 +411,7 @@ router.post('/products', authenticateToken, async (req: Request, res: Response) 
 
       // 3. Insert images
       if (images && images.length > 0) {
+        console.log("[Save Flow] Step 3.0.10: Inserting product images...");
         for (let i = 0; i < images.length; i++) {
           await tx.insert(productImages).values({
             productId,
@@ -411,6 +421,7 @@ router.post('/products', authenticateToken, async (req: Request, res: Response) 
         }
       }
 
+      console.log("[Save Flow] Step 3.0.11: Database insert statements executed successfully");
       return {
         ...productRecord,
         category: productRecord.categoryId,
@@ -420,9 +431,10 @@ router.post('/products', authenticateToken, async (req: Request, res: Response) 
       };
     });
 
+    console.log("[Save Flow] Step 3.0.12: Transaction completed, responding to client");
     res.status(201).json(newProduct);
   } catch (error) {
-    console.error('Error creating product:', error);
+    console.error('[Save Flow] Step 3.0.13: Exception caught in backend /products POST handler:', error);
     res.status(500).json({ error: 'Failed to create product' });
   }
 });
@@ -597,12 +609,37 @@ router.delete('/products/:id', authenticateToken, async (req: Request, res: Resp
     }
 
     if (permanent) {
-      // Perform permanent delete
+      // Query associated images before database deletion
+      const imagesToDelete = await db.query.productImages.findMany({
+        where: eq(productImages.productId, id),
+      });
+
+      // Perform permanent delete in DB
       await db.transaction(async (tx) => {
         await tx.delete(productSizes).where(eq(productSizes.productId, id));
         await tx.delete(productImages).where(eq(productImages.productId, id));
         await tx.delete(products).where(eq(products.id, id));
       });
+
+      // Delete images from Cloudinary
+      try {
+        const { default: cloudinary } = await import('../config/cloudinary');
+        const extractPublicId = (url: string): string | null => {
+          const match = url.match(/\/image\/upload\/(?:v\d+\/)?(.+?)(?:\.[a-z0-9]+)?$/i);
+          return match ? match[1] : null;
+        };
+
+        for (const img of imagesToDelete) {
+          const publicId = extractPublicId(img.imageUrl);
+          if (publicId) {
+            await cloudinary.uploader.destroy(publicId);
+            console.log(`[Cloudinary] Deleted permanent image: ${publicId}`);
+          }
+        }
+      } catch (cloudinaryErr) {
+        console.error('Failed to delete assets from Cloudinary during product deletion:', cloudinaryErr);
+      }
+
       res.json({ message: 'Product permanently deleted successfully' });
     } else {
       // Perform soft delete
