@@ -3,6 +3,7 @@ import { Heart, ImageIcon } from "lucide-react";
 import { Product } from "@/data/products";
 import { cn } from "@/lib/utils";
 import { getProductCardImage } from "@/lib/cloudinary";
+import { useWishlist } from "@/contexts/WishlistContext";
 
 interface ProductCardProps {
   product: Product;
@@ -11,6 +12,18 @@ interface ProductCardProps {
 
 export function ProductCard({ product, className }: ProductCardProps) {
   const isPlaceholder = product.images[0] === "/placeholder.svg";
+  const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
+  const isWishlisted = isInWishlist(product.id);
+
+  const handleWishlistClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isWishlisted) {
+      removeFromWishlist(product.id);
+    } else {
+      addToWishlist(product.id);
+    }
+  };
 
   return (
     <Link
@@ -22,6 +35,14 @@ export function ProductCard({ product, className }: ProductCardProps) {
     >
       {/* Image */}
       <div className="relative aspect-square overflow-hidden bg-muted flex items-center justify-center border-b border-border/40 shrink-0">
+        {/* Wishlist Button */}
+        <button
+          onClick={handleWishlistClick}
+          className="absolute top-3 right-3 z-10 p-1.5 rounded-full bg-background/80 backdrop-blur-sm hover:bg-background border border-border/50 text-muted-foreground hover:text-destructive transition-all duration-200"
+          aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+        >
+          <Heart className={cn("h-4 w-4 transition-colors", isWishlisted ? "fill-destructive text-destructive" : "text-muted-foreground")} />
+        </button>
         {isPlaceholder ? (
           // Placeholder for product image
           <div className="w-full h-full flex flex-col items-center justify-center gap-2 bg-muted">

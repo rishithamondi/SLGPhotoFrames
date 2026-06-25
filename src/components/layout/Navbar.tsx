@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Sun, Moon, Lock } from "lucide-react";
+import { Menu, X, Sun, Moon, Lock, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/contexts/ThemeContext";
 import { cn } from "@/lib/utils";
+import { useWishlist } from "@/contexts/WishlistContext";
 // Brand Assets
 import logo from "@/assets/brand/logofinal.png";
 
@@ -20,6 +21,8 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
+  const { wishlist } = useWishlist();
+  const wishlistCount = wishlist.length;
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
@@ -89,37 +92,47 @@ export function Navbar() {
           </div>
 
           {/* Right Actions */}
-          <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
+          <div className="flex items-center gap-1.5">
+            {/* Theme Toggle */}
+            <button
               onClick={toggleTheme}
               aria-label={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
-              className="hidden sm:flex text-muted-foreground hover:text-foreground"
+              className="p-2 rounded-full hover:bg-muted/50 text-muted-foreground hover:text-foreground transition-all duration-200 focus:outline-none flex items-center justify-center active:scale-95"
             >
               {theme === "light" ? <Moon className="h-[18px] w-[18px]" /> : <Sun className="h-[18px] w-[18px]" />}
-            </Button>
+            </button>
 
-            <Button
-              asChild
-              variant="ghost"
-              size="icon"
-              className="hidden sm:flex text-muted-foreground hover:text-foreground"
+            {/* Wishlist Link */}
+            <Link
+              to="/wishlist"
+              aria-label="Wishlist"
+              className="p-2 rounded-full hover:bg-muted/50 text-muted-foreground hover:text-foreground transition-all duration-200 focus:outline-none flex items-center justify-center relative active:scale-95"
             >
-              <Link to="/admin/login" aria-label="Admin Login">
-                <Lock className="h-[18px] w-[18px]" />
-              </Link>
-            </Button>
+              <Heart className="h-[18px] w-[18px]" />
+              {wishlistCount > 0 && (
+                <span className="absolute top-[4px] right-[4px] w-[13px] h-[13px] rounded-full bg-accent text-accent-foreground text-[8px] flex items-center justify-center font-bold leading-none">
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
 
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden text-muted-foreground"
+            {/* Admin Login Link */}
+            <Link
+              to="/admin/login"
+              aria-label="Admin Login"
+              className="hidden sm:flex p-2 rounded-full hover:bg-muted/50 text-muted-foreground hover:text-foreground transition-all duration-200 focus:outline-none items-center justify-center active:scale-95"
+            >
+              <Lock className="h-[18px] w-[18px]" />
+            </Link>
+
+            {/* Hamburger Menu Toggle */}
+            <button
               onClick={() => setIsOpen(!isOpen)}
               aria-label="Toggle navigation menu"
+              className="md:hidden p-2 rounded-full hover:bg-muted/50 text-muted-foreground hover:text-foreground transition-all duration-200 focus:outline-none flex items-center justify-center active:scale-95"
             >
-              {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </Button>
+              {isOpen ? <X className="h-[18px] w-[18px]" /> : <Menu className="h-[18px] w-[18px]" />}
+            </button>
           </div>
         </div>
 
@@ -147,19 +160,6 @@ export function Navbar() {
               </Link>
             ))}
             <div className="px-4 pt-2 flex flex-col gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={toggleTheme}
-                className="text-muted-foreground justify-start w-full"
-                aria-label="Toggle theme"
-              >
-                {theme === "light" ? (
-                  <><Moon className="h-4 w-4 mr-2" /> Dark Mode</>
-                ) : (
-                  <><Sun className="h-4 w-4 mr-2" /> Light Mode</>
-                )}
-              </Button>
               <Button
                 asChild
                 variant="ghost"

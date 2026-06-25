@@ -49,7 +49,7 @@ export default function HomePage() {
   return (
     <div>
       {/* Hero Section - Full Width Layout */}
-      <section className="relative min-h-[80vh] md:min-h-screen flex items-center pt-20 pb-12 lg:pb-0">
+      <section className="relative min-h-[calc(100vh-64px)] md:min-h-[calc(100vh-72px)] flex items-center py-6 sm:py-8 lg:py-0">
         {/* Background */}
         <div className="absolute inset-0 z-0">
           <img
@@ -64,18 +64,18 @@ export default function HomePage() {
         <div className="container-wide relative z-10 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             {/* Left Content */}
-            <div className="py-8 sm:py-12 lg:py-0 text-center sm:text-left">
-              <p className="text-accent text-xs sm:text-sm font-medium uppercase tracking-[0.2em] sm:tracking-[0.25em] mb-4 sm:mb-6 animate-fade-up">
+            <div className="py-4 md:py-12 lg:py-0 text-center lg:text-left order-2 lg:order-1">
+              <p className="text-accent text-xs sm:text-sm font-medium uppercase tracking-[0.2em] sm:tracking-[0.25em] mb-2 sm:mb-6 animate-fade-up">
                 Since 1985
               </p>
-              <h1 className="font-serif text-[clamp(2rem,8vw,3rem)] sm:text-5xl md:text-6xl lg:text-7xl font-bold text-foreground mb-4 sm:mb-6 animate-fade-up animation-delay-100 leading-[1.1] sm:leading-[1.05]">
+              <h1 className="font-serif text-[clamp(2rem,8vw,3rem)] sm:text-5xl md:text-6xl lg:text-7xl font-bold text-foreground mb-2 sm:mb-6 animate-fade-up animation-delay-100 leading-[1.1] sm:leading-[1.05]">
                 Timeless Frames for{" "}
                 <span className="text-gradient">Precious Memories</span>
               </h1>
-              <p className="text-sm sm:text-lg text-muted-foreground mb-6 sm:mb-8 leading-relaxed animate-fade-up animation-delay-200 max-w-lg mx-auto sm:mx-0">
+              <p className="text-sm sm:text-lg text-muted-foreground mb-4 sm:mb-8 leading-relaxed animate-fade-up animation-delay-200 max-w-lg mx-auto lg:mx-0">
                 Discover our collection of photo frames, lighting displays, and silver gift articles. Each piece tells a story.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 sm:gap-4 animate-fade-up animation-delay-300 justify-center sm:justify-start items-center">
+              <div className="flex flex-col sm:flex-row gap-4 sm:gap-4 animate-fade-up animation-delay-300 justify-center lg:justify-start items-center">
                 <Link to="/products" className="w-full sm:w-auto">
                   <Button size="lg" className="w-full sm:w-auto sm:px-8 shadow-gold">
                     View Products
@@ -94,9 +94,9 @@ export default function HomePage() {
             </div>
 
             {/* Right Side - Hero Image */}
-            <div className="hidden lg:flex items-center justify-center relative h-[500px]">
+            <div className="flex items-center justify-center relative h-[260px] sm:h-[380px] lg:h-[500px] mt-2 lg:mt-0 order-1 lg:order-2">
               {/* Main Hero Image - Father's Shop */}
-              <div className="relative w-full h-full max-w-md">
+              <div className="relative w-full h-full max-w-[240px] sm:max-w-md">
                 <img
                   src={heroMainImage}
                   alt="Father's Shop - Sri Lakshmi Ganapathi Photo Frame Works"
@@ -105,8 +105,8 @@ export default function HomePage() {
               </div>
 
               {/* Decorative elements around the image */}
-              <div className="absolute -top-4 -right-4 w-24 h-24 border-2 border-accent/20 rounded-xl rotate-12" />
-              <div className="absolute -bottom-4 -left-4 w-20 h-20 bg-accent/10 rounded-lg -rotate-6" />
+              <div className="absolute -top-3 -right-3 w-16 h-16 sm:w-24 sm:h-24 border-2 border-accent/20 rounded-xl rotate-12" />
+              <div className="absolute -bottom-3 -left-3 w-14 h-14 sm:w-20 sm:h-20 bg-accent/10 rounded-lg -rotate-6" />
             </div>
           </div>
         </div>

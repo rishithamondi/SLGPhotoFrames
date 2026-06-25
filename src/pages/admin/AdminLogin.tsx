@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Lock, Mail, Loader2, ArrowRight, ArrowLeft } from "lucide-react";
+import { Lock, Mail, Loader2, ArrowRight, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 
 export default function AdminLogin() {
@@ -13,6 +13,7 @@ export default function AdminLogin() {
   const { login, isLoggingIn, isAuthenticated } = useAdmin();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -69,7 +70,7 @@ export default function AdminLogin() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="admin@slgphotoframes.com"
+                  placeholder="Enter email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={isLoggingIn}
@@ -83,13 +84,25 @@ export default function AdminLogin() {
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   id="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isLoggingIn}
-                  className="pl-10 bg-background/50 border-border text-foreground placeholder-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary rounded-lg transition-all duration-200"
+                  className="pl-10 pr-10 bg-background/50 border-border text-foreground placeholder-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary rounded-lg transition-all duration-200"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  disabled={isLoggingIn}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground focus:outline-none transition-colors"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
               </div>
             </div>
             <Button

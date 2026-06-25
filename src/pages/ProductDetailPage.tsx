@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useDocumentTitle } from "@/hooks/use-document-title";
-import { ArrowLeft, Heart, Phone, MessageCircle, Truck, Shield, RotateCcw, ChevronLeft, ChevronRight, Gift, Package, Clock, Palette, Users, Zap, MapPin, Calendar, X, AlertCircle } from "lucide-react";
+import { Heart, Phone, MessageCircle, Truck, Shield, RotateCcw, ChevronLeft, ChevronRight, AlertCircle, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ProductCard } from "@/components/products/ProductCard";
@@ -9,9 +9,10 @@ import { ProductSkeleton } from "@/components/products/ProductSkeleton";
 import { useWishlist } from "@/contexts/WishlistContext";
 import { siteConfig, getWhatsAppUrl, getCallUrl } from "@/config/site";
 import { cn } from "@/lib/utils";
-import { UrgentOrderSection, MobileUrgentBar, QuickReplyButton, GiftMode } from "@/components/products/ProductDetailComponents";
+import { GiftMode } from "@/components/products/ProductDetailComponents";
 import { useProduct, useProducts } from "@/hooks/useCatalog";
 import { getProductDetailImage, getProductThumbnailImage } from "@/lib/cloudinary";
+import { toast } from "sonner";
 
 
 export default function ProductDetailPage() {
@@ -63,6 +64,30 @@ export default function ProductDetailPage() {
   const relatedProducts = relatedProductsData?.products.filter(p => p.id !== product.id).slice(0, 4) || [];
 
   const toggleWishlist = () => inWishlist ? removeFromWishlist(product.id) : addToWishlist(product.id);
+
+  const handleShare = async () => {
+    const shareData = {
+      title: `${product.name} | Sri Lakshmi Ganapathi Photo Frames`,
+      text: `Check out this premium handcrafted photo frame: ${product.name}`,
+      url: window.location.href,
+    };
+
+    if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch (err) {
+        console.log("Web Share failed, falling back to copy:", err);
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      toast.success("Product link copied to clipboard!");
+    } catch (err) {
+      toast.error("Failed to copy link to clipboard.");
+    }
+  };
   
   const scrollToImage = (index: number) => {
     setCurrentImageIndex(index);
@@ -204,45 +229,9 @@ export default function ProductDetailPage() {
               </div>
             )}
 
-            {/* Quick Reply Buttons */}
-            <div className="mb-4">
-              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Quick Ask</h3>
-              <div className="flex flex-wrap gap-2">
-                <QuickReplyButton
-                  icon={Package}
-                  label="Ask Price"
-                  message="Can you tell me the best price for this?"
-                  productName={product.name}
-                />
-                <QuickReplyButton
-                  icon={Clock}
-                  label="Delivery Time"
-                  message="How long will delivery take?"
-                  productName={product.name}
-                />
-                <QuickReplyButton
-                  icon={Palette}
-                  label="Customization"
-                  message="Is customization available for this?"
-                  productName={product.name}
-                />
-                <QuickReplyButton
-                  icon={Users}
-                  label="Bulk Order"
-                  message="I need a bulk order. Can you provide a discount?"
-                  productName={product.name}
-                />
-              </div>
-            </div>
-
             {/* Gift Mode */}
             <div className="mb-4">
               <GiftMode productName={product.name} />
-            </div>
-
-            {/* Urgent Order Section */}
-            <div className="mb-4">
-              <UrgentOrderSection productName={product.name} selectedSize={selectedSize} />
             </div>
 
             {/* Delivery info */}
@@ -281,6 +270,9 @@ export default function ProductDetailPage() {
                 </Link>
                 <Button variant="outline" size="lg" onClick={toggleWishlist} className={cn(inWishlist && "bg-accent/10 border-accent text-accent")} aria-label={inWishlist ? "Remove from wishlist" : "Add to wishlist"}>
                   <Heart className={cn("h-4 w-4", inWishlist && "fill-current")} />
+                </Button>
+                <Button variant="outline" size="lg" onClick={handleShare} aria-label="Share product">
+                  <Share2 className="h-4 w-4" />
                 </Button>
               </div>
             </div>
@@ -330,10 +322,8 @@ export default function ProductDetailPage() {
             </div>
           </section>
         )}
-      </div>
 
-      {/* Mobile Sticky Urgent Order Bar */}
-      <MobileUrgentBar productName={product.name} selectedSize={selectedSize} />
+      </div>
     </div>
   );
 }

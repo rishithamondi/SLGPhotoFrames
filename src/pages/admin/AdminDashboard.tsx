@@ -688,11 +688,8 @@ export default function AdminDashboard() {
               </Card>
             </div>
 
-            {/* Quick Actions Panel */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              
-              {/* Recently Added Table */}
-              <div className="lg:col-span-2 space-y-3">
+            {/* Recently Added Table */}
+            <div className="space-y-3">
                 <h3 className="text-lg font-serif font-bold text-foreground">Recently Added Products</h3>
                 <Card className="border-border bg-card overflow-hidden shadow-lg rounded-2xl">
                   <div className="overflow-x-auto">
@@ -779,41 +776,6 @@ export default function AdminDashboard() {
                   </div>
                 </Card>
               </div>
-
-              {/* Quick Actions Panel */}
-              <div className="space-y-3">
-                <h3 className="text-lg font-serif font-bold text-foreground">Quick Actions</h3>
-                <Card className="border-border bg-card p-5 space-y-3 shadow-lg rounded-2xl">
-                  <p className="text-xs text-muted-foreground">Common administrative actions to quickly manage items:</p>
-                  
-                  <Button 
-                    onClick={openCreateModal}
-                    className="w-full justify-start gap-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl py-2.5 shadow-gold hover-lift"
-                  >
-                    <Plus className="w-4 h-4" />
-                    Create New Product
-                  </Button>
-
-                  <Button 
-                    onClick={() => setActiveTab("products")}
-                    variant="outline"
-                    className="w-full justify-start gap-3 border-border hover:bg-secondary text-foreground rounded-xl py-2.5"
-                  >
-                    <Package className="w-4 h-4" />
-                    Manage Catalog Listing
-                  </Button>
-
-                  <div className="pt-4 border-t border-border">
-                    <h4 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Shortcuts</h4>
-                    <div className="text-xs text-muted-foreground space-y-1.5 font-mono">
-                      <p>✨ Slugs auto-generate from title</p>
-                      <p>✨ Soft deletes mark status as 'inactive'</p>
-                      <p>✨ De-activated items hide from public site</p>
-                    </div>
-                  </div>
-                </Card>
-              </div>
-            </div>
           </div>
         )}
 
