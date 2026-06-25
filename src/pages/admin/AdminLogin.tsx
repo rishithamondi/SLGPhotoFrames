@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Lock, Mail, Loader2, ArrowRight, ArrowLeft } from "lucide-react";
+import { Lock, Mail, Loader2, ArrowRight, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 
 export default function AdminLogin() {
@@ -13,6 +13,7 @@ export default function AdminLogin() {
   const { login, isLoggingIn, isAuthenticated } = useAdmin();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -52,8 +53,8 @@ export default function AdminLogin() {
       
       <Card className="w-full max-w-md border-border bg-card/90 backdrop-blur-xl shadow-gold shadow-lg text-foreground relative z-10 transition-all duration-300 hover:border-primary/30">
         <CardHeader className="space-y-2 text-center pb-8 border-b border-border">
-          <div className="mx-auto w-12 h-12 bg-primary rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20 mb-2 transform hover:rotate-12 transition-transform duration-300">
-            <Lock className="w-6 h-6 text-primary-foreground" />
+          <div className="mx-auto p-2 text-primary flex items-center justify-center mb-2">
+            <Lock className="h-[18px] w-[18px]" />
           </div>
           <CardTitle className="text-3xl font-serif font-bold tracking-tight text-gradient">Admin Panel</CardTitle>
           <CardDescription className="text-muted-foreground text-sm">
@@ -69,7 +70,7 @@ export default function AdminLogin() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="admin@slgphotoframes.com"
+                  placeholder="Enter email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={isLoggingIn}
@@ -83,13 +84,25 @@ export default function AdminLogin() {
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   id="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isLoggingIn}
-                  className="pl-10 bg-background/50 border-border text-foreground placeholder-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary rounded-lg transition-all duration-200"
+                  className="pl-10 pr-10 bg-background/50 border-border text-foreground placeholder-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary rounded-lg transition-all duration-200"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  disabled={isLoggingIn}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground focus:outline-none transition-colors"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
               </div>
             </div>
             <Button

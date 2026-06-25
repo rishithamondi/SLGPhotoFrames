@@ -53,18 +53,6 @@ export function Footer() {
               Creating beautiful handcrafted photo frames and gift articles since 1985.
               Each piece tells a story of dedication and artistry.
             </p>
-            
-            {/* Social/WhatsApp Button */}
-            <a 
-              href={getWhatsAppUrl()} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 sm:gap-3 px-4 sm:px-5 py-2.5 sm:py-3 bg-primary/10 hover:bg-primary/20 text-primary rounded-xl transition-all duration-300 group border border-primary/20 hover:border-primary/40 text-sm"
-            >
-              <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5" />
-              <span className="font-medium">Chat on WhatsApp</span>
-              <ArrowUpRight className="h-4 w-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
-            </a>
           </div>
 
           {/* Quick Links - Takes 2 columns */}
@@ -154,12 +142,6 @@ export function Footer() {
             <p className="text-[10px] sm:text-xs text-muted-foreground">
               © {currentYear} {siteConfig.name}. All rights reserved.
             </p>
-            <div className="flex items-center gap-3">
-              <p className="text-[10px] sm:text-xs text-muted-foreground flex items-center justify-center gap-2">
-                <span className="w-1 h-1 rounded-full bg-primary" />
-                Created by Rishitha Shivanandh✨
-              </p>
-            </div>
           </div>
         </div>
       </div>

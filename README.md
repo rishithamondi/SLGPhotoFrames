@@ -141,8 +141,8 @@ JWT_SECRET=your_super_secret_jwt_key_here
 
 # --- DEFAULT ADMIN CREDS ---
 # Input credentials used by the database seeding script
-ADMIN_EMAIL=
-ADMIN_PASSWORD=
+ADMIN_EMAIL=admin@slgphotoframes.com
+ADMIN_PASSWORD=AdminSLG2026!
 
 # --- CLOUDINARY CONFIG ---
 # Storage API keys for image uploads

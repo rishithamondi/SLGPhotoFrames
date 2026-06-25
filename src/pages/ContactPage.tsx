@@ -95,23 +95,23 @@ export default function ContactPage() {
             <div className="space-y-4 sm:space-y-6 animate-fade-up">
               <div>
                 <h2 className="font-serif text-xl sm:text-2xl lg:text-3xl font-bold text-foreground mb-2 sm:mb-3">Visit Our Workshop</h2>
-                <p className="text-muted-foreground text-sm sm:text-base">Come see our handcrafted pieces in person. We'd love to welcome you.</p>
+                <p className="text-muted-foreground text-sm sm:text-base mb-4">Come see our handcrafted pieces in person. We'd love to welcome you.</p>
               </div>
               
-              <div className="rounded-xl sm:rounded-2xl overflow-hidden h-64 sm:h-80 bg-card border border-border shadow-xl">
+              <div className="rounded-2xl sm:rounded-[24px] overflow-hidden h-72 sm:h-96 bg-card border border-primary/20 shadow-gold shadow-lg hover:shadow-gold/30 hover:border-primary/45 transition-all duration-300">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3814.1234567890123!2d81.7833!3d17.0000!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a37f7c7c7c7c7c7%3A0x8c8c8c8c8c8c8c8c!2sGokavaram%20Bustand%20Road%2C%20Rajamahendravaram!5e0!3m2!1sen!2sin!4v1707123456789!5m2!1sen!2sin"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1000.0!2d81.7737387!3d17.0097586!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a37a5303a3fb497%3A0x8eec7fa6dd67b34b!2sSRI%20LAKSHMI%20GANAPATI%20PHOTO%20FRAME%20WORKS!5e0!3m2!1sen!2sin!4v1707123456789!5m2!1sen!2sin"
                   width="100%" height="100%" style={{ border: 0, filter: "grayscale(20%)" }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" title="Shop Location"
                 />
               </div>
               
               <a 
-                href="https://maps.app.goo.gl/kGnauS3ZLyysshDU6" 
+                href={siteConfig.address.mapsUrl} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-accent hover:text-accent/80 transition-colors text-sm"
+                className="inline-flex items-center gap-2 text-accent hover:text-accent/80 transition-colors text-sm group"
               >
-                <ExternalLink className="h-4 w-4" />
+                <ExternalLink className="h-4 w-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                 <span className="font-medium">Open in Google Maps</span>
               </a>
             </div>

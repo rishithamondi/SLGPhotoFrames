@@ -1,50 +1,48 @@
 import { Link } from "react-router-dom";
-import { Trash2, ArrowRight, Heart } from "lucide-react";
+import { Trash2, Heart } from "lucide-react";
 import { useDocumentTitle } from "@/hooks/use-document-title";
 import { Button } from "@/components/ui/button";
 import { useWishlist } from "@/contexts/WishlistContext";
-import { getWhatsAppUrl } from "@/config/site";
 import { useProducts } from "@/hooks/useCatalog";
-import { ProductSkeleton } from "@/components/products/ProductSkeleton";
 import { getProductCardImage } from "@/lib/cloudinary";
 
 export default function WishlistPage() {
   useDocumentTitle("Your Wishlist");
-  const { wishlist, removeFromWishlist, clearWishlist } = useWishlist();
-  
-  // Fetch all products since we need to resolve IDs. 
-  // In a larger app, we'd have a specific endpoint or POST request to fetch by IDs
+  const { wishlist, removeFromWishlist } = useWishlist();
+
+  // Fetch all products to resolve saved IDs
   const { data: productsData, isLoading } = useProducts({ limit: 100 });
-  
   const wishlistProducts = (productsData?.products || []).filter((p) => wishlist.includes(p.id));
   const totalEstimate = wishlistProducts.reduce((sum, p) => sum + p.basePrice, 0);
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background py-12 md:py-16">
-        <div className="container-custom">
-           <div className="grid grid-cols-1 gap-4">
-             {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="h-24 bg-muted rounded-xl animate-pulse" />
-             ))}
-           </div>
+        <div className="container-custom px-4 sm:px-6">
+          <div className="h-10 bg-muted rounded w-1/4 mb-8 animate-pulse"></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="aspect-square bg-muted rounded-xl animate-pulse" />
+            ))}
+          </div>
         </div>
       </div>
     );
   }
 
+  // Minimal Empty State
   if (wishlistProducts.length === 0) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center max-w-sm mx-auto px-4 animate-fade-up">
-          <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-6">
-            <Heart className="h-7 w-7 text-muted-foreground" />
+      <div className="min-h-[70vh] bg-background flex flex-col items-center justify-center py-20 px-4">
+        <div className="text-center max-w-sm mx-auto animate-fade-up">
+          <div className="w-20 h-20 rounded-full bg-muted/40 flex items-center justify-center mx-auto mb-6">
+            <Heart className="h-9 w-9 text-muted-foreground/60" />
           </div>
-          <h1 className="font-serif text-2xl font-bold text-foreground mb-3">Your Wishlist is Empty</h1>
-          <p className="text-sm text-muted-foreground mb-8">Start adding products you love to your wishlist!</p>
+          <h1 className="font-serif text-2xl font-bold text-foreground mb-2">Your wishlist is empty.</h1>
+          <p className="text-sm text-muted-foreground mb-8">Save your favourite frames to view them later.</p>
           <Link to="/products">
-            <Button size="lg">
-              Browse Products <ArrowRight className="h-4 w-4 ml-2" />
+            <Button size="lg" className="px-8 shadow-gold">
+              Browse Products
             </Button>
           </Link>
         </div>
@@ -54,68 +52,87 @@ export default function WishlistPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <section className="py-12 md:py-16 border-b border-border/50">
-        <div className="container-custom text-center">
-          <div className="section-divider mb-4" />
+      {/* Title Header */}
+      <section className="py-12 border-b border-border/40">
+        <div className="container-custom px-4 sm:px-6 text-center">
+          <div className="section-divider mb-3" />
           <h1 className="font-serif text-3xl sm:text-4xl font-bold text-foreground mb-2">Your Wishlist</h1>
-          <p className="text-muted-foreground text-sm">{wishlistProducts.length} item{wishlistProducts.length !== 1 ? "s" : ""} saved</p>
+          <p className="text-muted-foreground text-sm">
+            {wishlistProducts.length} item{wishlistProducts.length !== 1 ? "s" : ""} saved
+          </p>
         </div>
       </section>
 
-      <div className="container-custom py-8">
-        <div className="flex justify-between items-center mb-6">
-          <Link to="/products"><Button variant="outline" size="sm">Continue Shopping</Button></Link>
-          <Button variant="ghost" size="sm" onClick={clearWishlist} className="text-destructive hover:text-destructive">
-            <Trash2 className="h-3.5 w-3.5 mr-1.5" /> Clear All
-          </Button>
-        </div>
-
-        <div className="space-y-3">
+      <div className="container-custom px-4 sm:px-6 py-8 md:py-12">
+        {/* Product Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {wishlistProducts.map((product) => (
-            <div key={product.id} className="flex gap-4 p-4 bg-card rounded-xl border border-border/50 transition-all duration-200 hover:shadow-card">
-              <Link to={`/products/${product.id}`} className="shrink-0 w-20 h-20 md:w-24 md:h-24 rounded-lg overflow-hidden bg-white border border-border/50 flex items-center justify-center p-1.5">
-                <img 
-                  src={getProductCardImage(product.images?.[0]) || ""} 
-                  alt={product.name} 
-                  className="max-w-full max-h-full object-contain" 
-                  loading="lazy" 
+            <div
+              key={product.id}
+              className="group relative bg-card rounded-xl overflow-hidden border border-border/50 hover:shadow-md transition-all duration-300 flex flex-col h-full"
+            >
+              {/* Product Image */}
+              <div className="relative aspect-square bg-white flex items-center justify-center p-6 border-b border-border/40 shrink-0">
+                <img
+                  src={getProductCardImage(product.images?.[0]) || ""}
+                  alt={product.name}
+                  className="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
                   decoding="async"
                 />
-              </Link>
-              <div className="flex-1 min-w-0">
-                <Link to={`/products/${product.id}`}>
-                  <h3 className="font-serif text-base font-semibold text-foreground hover:text-primary transition-colors line-clamp-1">{product.name}</h3>
-                </Link>
-                <p className="text-xs text-muted-foreground mb-1.5">{product.materials?.slice(0, 2).join(" · ")}</p>
-                <p className="font-semibold text-foreground text-sm">Starting ₹{product.basePrice.toLocaleString()}</p>
-              </div>
-              <div className="flex flex-col justify-between items-end">
-                <button onClick={() => removeFromWishlist(product.id)} className="p-1.5 text-muted-foreground hover:text-destructive transition-colors" aria-label="Remove from wishlist">
-                  <Trash2 className="h-4 w-4" />
+
+                {/* Remove from Wishlist */}
+                <button
+                  onClick={() => removeFromWishlist(product.id)}
+                  className="absolute top-4 right-4 p-2 text-neutral-500 hover:text-destructive transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer select-none"
+                  aria-label="Remove from wishlist"
+                >
+                  <Trash2 className="h-[18px] w-[18px]" />
                 </button>
-                <Link to={`/products/${product.id}`}>
-                  <Button size="sm" variant="outline">View</Button>
-                </Link>
+              </div>
+
+              {/* Card Content */}
+              <div className="p-4 flex-1 flex flex-col justify-between">
+                <div className="space-y-1 mb-4">
+                  <h3 className="font-serif text-base font-semibold text-foreground line-clamp-2 min-h-[2.5rem]">
+                    {product.name}
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    Starting from{" "}
+                    <span className="font-serif font-bold text-sm text-foreground">
+                      ₹{product.basePrice.toLocaleString()}
+                    </span>
+                  </p>
+                </div>
+
+                {/* View Product */}
+                <div className="mt-auto">
+                  <Link to={`/products/${product.id}`} className="w-full">
+                    <Button variant="outline" size="sm" className="w-full">
+                      View Product
+                    </Button>
+                  </Link>
+                </div>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Subtotal */}
-        <div className="mt-6 p-4 bg-muted/50 rounded-xl flex items-center justify-between">
-          <span className="text-sm text-muted-foreground">Estimated total (starting prices)</span>
-          <span className="font-serif font-bold text-lg text-foreground">₹{totalEstimate.toLocaleString()}</span>
-        </div>
-
-        {/* CTA */}
-        <div className="mt-8 bg-card border border-border/50 rounded-xl p-6 md:p-8 text-center">
-          <h2 className="font-serif text-xl font-bold text-foreground mb-3">Ready to Order?</h2>
-          <p className="text-sm text-muted-foreground mb-5">Contact us to discuss your wishlist items.</p>
-          <div className="flex flex-wrap justify-center gap-3">
-            <a href={getWhatsAppUrl(`Hi! I'd like to order these items from my wishlist: ${wishlistProducts.map((p) => p.name).join(", ")}`)} target="_blank" rel="noopener noreferrer">
-              <Button variant="gold" size="lg">Order on WhatsApp</Button>
-            </a>
-            <Link to="/contact"><Button variant="outline" size="lg">Contact Us</Button></Link>
+        {/* Simplified Estimated Total & Continue Shopping */}
+        <div className="mt-12 max-w-xs ml-auto py-2 space-y-3">
+          <div className="flex items-baseline justify-between border-t border-border/30 pt-4">
+            <span className="text-sm font-medium text-muted-foreground">Estimated Total</span>
+            <span className="font-serif font-bold text-2xl text-foreground">
+              ₹{totalEstimate.toLocaleString()}
+            </span>
+          </div>
+          <div className="text-right">
+            <Link
+              to="/products"
+              className="inline-flex items-center gap-1 text-xs sm:text-sm text-muted-foreground hover:text-foreground hover:underline transition-colors duration-200 py-1.5"
+            >
+              <span>&larr;</span> Continue Shopping
+            </Link>
           </div>
         </div>
       </div>
