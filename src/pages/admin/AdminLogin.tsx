@@ -53,8 +53,8 @@ export default function AdminLogin() {
       
       <Card className="w-full max-w-md border-border bg-card/90 backdrop-blur-xl shadow-gold shadow-lg text-foreground relative z-10 transition-all duration-300 hover:border-primary/30">
         <CardHeader className="space-y-2 text-center pb-8 border-b border-border">
-          <div className="mx-auto w-12 h-12 bg-primary rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20 mb-2 transform hover:rotate-12 transition-transform duration-300">
-            <Lock className="w-6 h-6 text-primary-foreground" />
+          <div className="mx-auto p-2 text-primary flex items-center justify-center mb-2">
+            <Lock className="h-[18px] w-[18px]" />
           </div>
           <CardTitle className="text-3xl font-serif font-bold tracking-tight text-gradient">Admin Panel</CardTitle>
           <CardDescription className="text-muted-foreground text-sm">

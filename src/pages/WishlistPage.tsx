@@ -84,10 +84,10 @@ export default function WishlistPage() {
                 {/* Remove from Wishlist */}
                 <button
                   onClick={() => removeFromWishlist(product.id)}
-                  className="absolute top-3 right-3 p-2 rounded-full bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-destructive hover:scale-105 transition-all duration-200 shadow-sm"
+                  className="absolute top-4 right-4 p-2 text-neutral-500 hover:text-destructive transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer select-none"
                   aria-label="Remove from wishlist"
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Trash2 className="h-[18px] w-[18px]" />
                 </button>
               </div>
 

@@ -38,10 +38,13 @@ export function ProductCard({ product, className }: ProductCardProps) {
         {/* Wishlist Button */}
         <button
           onClick={handleWishlistClick}
-          className="absolute top-3 right-3 z-10 p-1.5 rounded-full bg-background/80 backdrop-blur-sm hover:bg-background border border-border/50 text-muted-foreground hover:text-destructive transition-all duration-200"
+          className={cn(
+            "absolute top-4 right-4 z-10 p-2 text-neutral-500 hover:text-neutral-900 transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer select-none",
+            isWishlisted && "text-primary hover:text-primary animate-wishlist-bounce"
+          )}
           aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
         >
-          <Heart className={cn("h-4 w-4 transition-colors", isWishlisted ? "fill-destructive text-destructive" : "text-muted-foreground")} />
+          <Heart className={cn("h-[18px] w-[18px] transition-colors duration-200", isWishlisted && "fill-primary text-primary")} />
         </button>
         {isPlaceholder ? (
           // Placeholder for product image

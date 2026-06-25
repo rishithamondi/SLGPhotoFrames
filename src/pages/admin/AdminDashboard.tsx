@@ -13,6 +13,7 @@ import {
 } from "@/hooks/useAdminCatalog";
 import { Product } from "@/types/api";
 import { getProductCardImage, getProductThumbnailImage } from "@/lib/cloudinary";
+import logo from "@/assets/brand/logofinal.png";
 import { 
   LayoutDashboard, 
   Package, 
@@ -486,25 +487,21 @@ export default function AdminDashboard() {
     <div className="h-screen bg-background text-foreground flex flex-col md:flex-row font-sans overflow-hidden">
       
       {/* Sticky Mobile Header Bar */}
-      <div className="flex md:hidden items-center justify-between p-4 bg-card border-b border-border sticky top-0 z-30 shrink-0">
+      <div className="flex md:hidden items-center justify-between h-16 px-4 bg-background/95 backdrop-blur-sm border-b border-border shadow-soft sticky top-0 z-30 shrink-0">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
-            <Package className="w-4.5 h-4.5 text-primary-foreground" />
-          </div>
+          <img src={logo} alt="SLG Ganesh Logo" className="w-10 h-10 object-contain bg-transparent shrink-0" />
           <div>
-            <h1 className="font-serif font-bold text-sm leading-none text-gradient">SLG Frames</h1>
-            <span className="text-[8px] text-muted-foreground uppercase tracking-widest font-semibold">Inventory Panel</span>
+            <h2 className="text-sm font-semibold text-foreground tracking-wide leading-none mb-1">Shivanandh</h2>
+            <p className="text-[10px] text-primary font-semibold uppercase tracking-wider leading-none">Business Owner</p>
           </div>
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
+        <button
           onClick={() => setIsMobileSidebarOpen(true)}
           aria-label="Open sidebar"
-          className="h-9 w-9 text-muted-foreground"
+          className="p-2 rounded-full hover:bg-muted/50 text-muted-foreground hover:text-foreground transition-all duration-200 focus:outline-none flex items-center justify-center active:scale-95"
         >
-          <Menu className="h-5 w-5" />
-        </Button>
+          <Menu className="h-[18px] w-[18px]" />
+        </button>
       </div>
 
       {/* Mobile Drawer Backdrop */}
@@ -528,17 +525,12 @@ export default function AdminDashboard() {
         )}
       >
         <div>
-          {/* Logo Brand */}
-          <div className="p-6 border-b border-border flex items-center justify-between md:justify-start gap-3">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
-                <Package className="w-5 h-5 text-primary-foreground" />
-              </div>
-              <div>
-                <h1 className="font-serif font-bold text-base leading-none text-gradient">SLG Frames</h1>
-                <span className="text-[9px] text-muted-foreground uppercase tracking-widest font-semibold">Inventory Panel</span>
-              </div>
-            </div>
+          {/* Logo Brand / Profile Header */}
+          <div className="p-6 border-b border-border flex items-center justify-between relative">
+            <h2 className="font-serif font-bold text-lg text-foreground">
+              Inventory Panel
+            </h2>
+            
             {/* Close button inside sidebar on mobile */}
             <Button
               variant="ghost"
@@ -585,23 +577,14 @@ export default function AdminDashboard() {
         </div>
 
         {/* User / Logout */}
-        <div className="p-4 border-t border-border">
-          <div className="flex items-center gap-3 px-2 py-2 mb-2 bg-secondary/40 rounded-xl border border-border/40">
-            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center font-bold text-primary-foreground text-sm">
-              {admin?.email?.[0]?.toUpperCase() || "A"}
-            </div>
-            <div className="overflow-hidden">
-              <p className="text-xs font-semibold truncate text-foreground">{admin?.email}</p>
-              <p className="text-[9px] text-muted-foreground font-medium uppercase tracking-wider">Business Owner</p>
-            </div>
-          </div>
+        <div className="p-4 border-t border-border mt-auto">
           <Button
             onClick={() => {
               setIsMobileSidebarOpen(false);
               logout();
             }}
             variant="ghost"
-            className="w-full flex items-center justify-start gap-3 text-muted-foreground hover:text-destructive hover:bg-destructive/5 px-4 py-2.5 rounded-xl text-sm transition-colors"
+            className="w-full flex items-center justify-start gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 text-muted-foreground hover:text-foreground hover:bg-secondary"
           >
             <LogOut className="w-4 h-4" />
             Sign Out
